@@ -7,7 +7,7 @@ export default async function IngredientsPage() {
 
   return (
     <HydrateClient>
-      <main className="grid gap-6">
+      <main className="grid gap-6 py-6">
         <div className="grid gap-6 px-6">
           <h1 className="text-3xl font-bold">Ingredients</h1>
           <NewIngredient />
