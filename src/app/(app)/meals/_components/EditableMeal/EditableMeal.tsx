@@ -57,7 +57,7 @@ export const EditableMeal = ({ id, name, onUpdate }: EditableMealProps) => {
                 <Input
                   placeholder="Meal name"
                   {...field}
-                  className="md:text-md -ml-3 h-9 border-0 bg-none"
+                  className="md:text-md -ml-2 h-9 border-0 pl-2"
                   autoFocus
                 />
               </FormControl>

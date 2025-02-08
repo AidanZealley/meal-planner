@@ -83,26 +83,31 @@ export const MealListItem = ({
   };
 
   return (
-    <div className="group grid grid-cols-[1fr_auto] items-center gap-2">
+    <div
+      className={cn(
+        "group relative grid grid-cols-[1fr_auto] items-center gap-2 rounded-lg p-1 pl-3 hover:bg-muted/50",
+        isEditing ? "bg-muted/50" : "",
+      )}
+    >
+      <Link href={`/meals/${id}`} className="absolute inset-0" />
       {isEditing ? (
         <EditableMeal id={id} name={name} onUpdate={endEdit} />
       ) : (
-        <div className="flex items-center gap-2">
-          <Link
-            href={`/meals/${id}`}
+        <div className="flex items-center gap-3">
+          <span
             className={cn(
               "transition-opacity",
-              !isEditingId || isEditing ? "opacity-100" : "opacity-30",
+              !isEditingId || isEditing ? "opacity-100" : "opacity-0",
             )}
           >
             {name}
-          </Link>
+          </span>
           {activePlan && <Badge>{activePlan.status}</Badge>}
         </div>
       )}
       <div
         className={cn(
-          "flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
+          "relative flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
           isEditing ? "opacity-100" : "",
         )}
       >
