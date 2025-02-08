@@ -168,11 +168,11 @@ export const shoppingList = createTable(
     id: uuid("id").defaultRandom().primaryKey().notNull(),
     ingredientId: uuid("ingredient_id")
       .notNull()
+      .unique()
       .references(() => ingredients.id, { onDelete: "cascade" }),
     done: boolean("done").default(false).notNull(),
     userId: text("user_id")
       .notNull()
-      .unique() // 👈 Ensures a 1:1 relationship
       .references(() => user.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .default(sql`CURRENT_TIMESTAMP`)
