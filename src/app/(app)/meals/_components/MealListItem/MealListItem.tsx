@@ -97,7 +97,7 @@ export const MealListItem = ({
           <span
             className={cn(
               "transition-opacity",
-              !isEditingId || isEditing ? "opacity-100" : "opacity-0",
+              !isEditingId || isEditing ? "opacity-100" : "opacity-30",
             )}
           >
             {name}
@@ -107,7 +107,7 @@ export const MealListItem = ({
       )}
       <div
         className={cn(
-          "relative flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
+          "relative flex items-center gap-2 opacity-30 transition-opacity group-hover:opacity-100",
           isEditing ? "opacity-100" : "",
         )}
       >
