@@ -4,7 +4,6 @@ import { api } from "@/trpc/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { type EditableIngredientProps } from "./EditableIngredient.types";
 import { Check } from "lucide-react";
+import { LoadingButton } from "@/components/LoadingButton";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -27,7 +27,7 @@ export const EditableIngredient = ({
   const { id, name } = ingredient;
   const utils = api.useUtils();
 
-  const { mutate } = api.ingredients.update.useMutation({
+  const { mutate, isPending } = api.ingredients.update.useMutation({
     onSuccess: async () => {
       await utils.ingredients.getAll.invalidate();
       form.reset();
@@ -69,9 +69,9 @@ export const EditableIngredient = ({
             </FormItem>
           )}
         />
-        <Button size="icon-sm" type="submit">
+        <LoadingButton isLoading={isPending} size="icon-sm" type="submit">
           <Check />
-        </Button>
+        </LoadingButton>
       </form>
     </Form>
   );

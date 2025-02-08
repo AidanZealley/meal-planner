@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { type IngredientsPickerItemProps } from "./IngredientsPickerItem.types";
 import { api } from "@/trpc/react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export const IngredientsPickerItem = ({
   ingredient,
@@ -12,7 +12,7 @@ export const IngredientsPickerItem = ({
 
   const utils = api.useUtils();
 
-  const { mutate } = api.mealIngredients.pickIngredient.useMutation({
+  const { mutate, isPending } = api.mealIngredients.pickIngredient.useMutation({
     onSuccess: async () => {
       await utils.mealIngredients.getAll.invalidate();
       await utils.meals.getById.invalidate({
@@ -31,9 +31,13 @@ export const IngredientsPickerItem = ({
 
   return (
     <div className="grid grid-cols-[auto_1fr] items-center gap-3">
-      <Button size="icon-sm" onClick={handlePickIngredient}>
+      <LoadingButton
+        isLoading={isPending}
+        size="icon-sm"
+        onClick={handlePickIngredient}
+      >
         <Plus />
-      </Button>
+      </LoadingButton>
       <span className={cn(!inStock ? "text-destructive line-through" : "")}>
         {name}
       </span>

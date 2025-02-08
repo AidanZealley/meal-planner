@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { CalendarPlus, Pencil, Trash2, X } from "lucide-react";
+import { CalendarMinus, CalendarPlus, Pencil, Trash2, X } from "lucide-react";
 import { EditableMeal } from "../EditableMeal";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import { type MealListItemProps } from "./MealListItem.types";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export const MealListItem = ({
   meal,
@@ -18,21 +19,40 @@ export const MealListItem = ({
 
   const utils = api.useUtils();
 
-  const { mutate: deleteMeal } = api.meals.delete.useMutation({
-    onSuccess: async () => {
-      await utils.meals.getAll.invalidate();
-    },
-  });
+  const { mutate: deleteMeal, isPending: isDeletePending } =
+    api.meals.delete.useMutation({
+      onSuccess: async () => {
+        await utils.meals.getAll.invalidate();
+      },
+    });
 
-  const { mutate: planMeal } = api.plannedMeals.create.useMutation({
-    onSuccess: async () => {
-      await utils.meals.getAll.invalidate();
-      await utils.plannedMeals.getAllByStatus.invalidate({
-        status: "cooked",
-      });
-      await utils.shoppingList.getAll.invalidate();
-    },
-  });
+  const { mutate: planMeal, isPending: isPlanPending } =
+    api.plannedMeals.create.useMutation({
+      onSuccess: async () => {
+        await utils.meals.getAll.invalidate();
+        await utils.plannedMeals.getAllByStatus.invalidate({
+          status: "planned",
+        });
+        await utils.plannedMeals.getAllByStatus.invalidate({
+          status: "cooked",
+        });
+        await utils.shoppingList.getAll.invalidate();
+      },
+    });
+
+  const { mutate: unplanMeal, isPending: isUnplanPending } =
+    api.plannedMeals.delete.useMutation({
+      onSuccess: async () => {
+        await utils.meals.getAll.invalidate();
+        await utils.plannedMeals.getAllByStatus.invalidate({
+          status: "planned",
+        });
+        await utils.plannedMeals.getAllByStatus.invalidate({
+          status: "cooked",
+        });
+        await utils.shoppingList.getAll.invalidate();
+      },
+    });
 
   const activePlan = plannedMeals.find(
     (plannedMeal) => plannedMeal.status === "planned",
@@ -48,6 +68,12 @@ export const MealListItem = ({
 
   const handlePlanMeal = () => {
     planMeal({
+      mealId: id,
+    });
+  };
+
+  const handleUnplanMeal = () => {
+    unplanMeal({
       mealId: id,
     });
   };
@@ -83,17 +109,22 @@ export const MealListItem = ({
         <Button size="icon-sm" variant="ghost" onClick={toggleEdit}>
           {isEditing ? <X /> : <Pencil />}
         </Button>
-        <Button
+        <LoadingButton
+          isLoading={isPlanPending || isUnplanPending}
           size="icon-sm"
           variant="ghost"
-          onClick={handlePlanMeal}
-          disabled={!!activePlan}
+          onClick={activePlan ? handleUnplanMeal : handlePlanMeal}
         >
-          <CalendarPlus />
-        </Button>
-        <Button size="icon-sm" variant="destructive" onClick={handleDelete}>
+          {activePlan ? <CalendarMinus /> : <CalendarPlus />}
+        </LoadingButton>
+        <LoadingButton
+          isLoading={isDeletePending}
+          size="icon-sm"
+          variant="destructive"
+          onClick={handleDelete}
+        >
           <Trash2 />
-        </Button>
+        </LoadingButton>
       </div>
     </div>
   );

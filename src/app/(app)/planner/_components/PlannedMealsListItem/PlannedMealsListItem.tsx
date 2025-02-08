@@ -1,9 +1,9 @@
-import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { api } from "@/trpc/react";
 import { type PlannedMealsListItemProps } from "./PlannedMealsListItem.types";
 import Link from "next/link";
 import { PlannedMealStatusPicker } from "../PlannedMealStatusPicker";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export const PlannedMealsListItem = ({
   plannedMeal,
@@ -17,7 +17,7 @@ export const PlannedMealsListItem = ({
 
   const utils = api.useUtils();
 
-  const { mutate } = api.plannedMeals.delete.useMutation({
+  const { mutate, isPending } = api.plannedMeals.delete.useMutation({
     onSuccess: async () => {
       await utils.plannedMeals.getAllByStatus.invalidate({
         status: "planned",
@@ -30,7 +30,7 @@ export const PlannedMealsListItem = ({
   });
 
   const handleDelete = () => {
-    mutate({ id });
+    mutate({ mealId });
   };
 
   return (
@@ -38,9 +38,14 @@ export const PlannedMealsListItem = ({
       <Link href={`/meals/${mealId}`}>{name}</Link>
       <div className="opacity-s0 flex items-center gap-2 transition-opacity group-hover:opacity-100">
         <PlannedMealStatusPicker id={id} status={status} />
-        <Button size="icon-sm" variant="destructive" onClick={handleDelete}>
+        <LoadingButton
+          isLoading={isPending}
+          size="icon-sm"
+          variant="destructive"
+          onClick={handleDelete}
+        >
           <Trash2 />
-        </Button>
+        </LoadingButton>
       </div>
     </div>
   );

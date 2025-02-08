@@ -41,10 +41,12 @@ export const plannedMealsRouter = createTRPCRouter({
     }),
 
   delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ mealId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
-        await tx.delete(plannedMeals).where(eq(plannedMeals.id, input.id));
+        await tx
+          .delete(plannedMeals)
+          .where(eq(plannedMeals.mealId, input.mealId));
 
         await generateShoppingList(tx, ctx.session.session);
       });

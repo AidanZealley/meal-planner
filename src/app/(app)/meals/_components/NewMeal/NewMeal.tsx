@@ -4,7 +4,6 @@ import { api } from "@/trpc/react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -15,6 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Plus } from "lucide-react";
+import { LoadingButton } from "@/components/LoadingButton";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -23,7 +23,7 @@ const formSchema = z.object({
 export const NewMeal = () => {
   const utils = api.useUtils();
 
-  const { mutate } = api.meals.create.useMutation({
+  const { mutate, isPending } = api.meals.create.useMutation({
     onSuccess: async () => {
       await utils.meals.getAll.invalidate();
       form.reset();
@@ -60,12 +60,12 @@ export const NewMeal = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">
+        <LoadingButton isLoading={isPending} type="submit">
           <span className="flex items-center gap-2">
             <Plus />
             Add
           </span>
-        </Button>
+        </LoadingButton>
       </form>
     </Form>
   );

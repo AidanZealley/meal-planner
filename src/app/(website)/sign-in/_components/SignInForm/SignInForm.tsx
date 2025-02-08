@@ -3,7 +3,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -16,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { LoadingButton } from "@/components/LoadingButton";
 
 const formSchema = z.object({
   email: z.string().min(1).max(255),
@@ -84,7 +84,9 @@ export const SignInForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">{isLoading ? "Loading..." : "Sign In"}</Button>
+        <LoadingButton isLoading={isLoading} type="submit">
+          Sign In
+        </LoadingButton>
       </form>
     </Form>
   );
