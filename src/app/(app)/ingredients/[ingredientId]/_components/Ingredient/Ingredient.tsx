@@ -3,7 +3,7 @@
 import { api } from "@/trpc/react";
 import { IngredientHeader } from "./components/IngredientHeader";
 import Link from "next/link";
-import { IngredientProps } from "./Ingredient.types";
+import { type IngredientProps } from "./Ingredient.types";
 
 export const Ingredient = ({ id }: IngredientProps) => {
   const [ingredient] = api.ingredients.getById.useSuspenseQuery({

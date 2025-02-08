@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { MealHeaderProps } from "./MealHeader.types";
+import { type MealHeaderProps } from "./MealHeader.types";
 
 export const MealHeader = ({ meal }: MealHeaderProps) => {
   const currentlyPlanned = meal?.plannedMeals.find(

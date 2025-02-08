@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { api } from "@/trpc/react";
-import { PlannedMealsListItemProps } from "./PlannedMealsListItem.types";
+import { type PlannedMealsListItemProps } from "./PlannedMealsListItem.types";
 import Link from "next/link";
 import { PlannedMealStatusPicker } from "../PlannedMealStatusPicker";
 

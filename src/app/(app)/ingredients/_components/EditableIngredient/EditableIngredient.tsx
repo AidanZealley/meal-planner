@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { EditableIngredientProps } from "./EditableIngredient.types";
+import { type EditableIngredientProps } from "./EditableIngredient.types";
 import { Check } from "lucide-react";
 
 const formSchema = z.object({
@@ -24,7 +24,7 @@ export const EditableIngredient = ({
   ingredient,
   onUpdate,
 }: EditableIngredientProps) => {
-  const { id, name, inStock } = ingredient;
+  const { id, name } = ingredient;
   const utils = api.useUtils();
 
   const { mutate } = api.ingredients.update.useMutation({

@@ -1,5 +1,5 @@
 import { api } from "@/trpc/react";
-import { MealIngredientsItemProps } from "./MealIngredientsItem.types";
+import { type MealIngredientsItemProps } from "./MealIngredientsItem.types";
 import { Button } from "@/components/ui/button";
 import { Minus } from "lucide-react";
 import { cn } from "@/lib/utils";

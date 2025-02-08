@@ -35,17 +35,17 @@ export const SignInForm = () => {
     },
   });
 
-  const onSubmit = ({ email, password }: z.infer<typeof formSchema>) => {
-    authClient.signIn.email(
+  const onSubmit = async ({ email, password }: z.infer<typeof formSchema>) => {
+    await authClient.signIn.email(
       {
         email,
         password,
       },
       {
-        onRequest: (ctx) => {
+        onRequest: () => {
           setIsLoading(true);
         },
-        onSuccess: (ctx) => {
+        onSuccess: () => {
           router.push("/dashboard");
         },
         onError: (ctx) => {

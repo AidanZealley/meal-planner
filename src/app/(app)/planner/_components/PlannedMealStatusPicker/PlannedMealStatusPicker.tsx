@@ -11,8 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlannedMealStatusPickerProps } from "./PlannedMealStatusPicker.types";
-import { PlannedMealStatus, PlannedMealStatusValues } from "@/lib/enums";
+import { type PlannedMealStatusPickerProps } from "./PlannedMealStatusPicker.types";
+import { type PlannedMealStatus, PlannedMealStatusValues } from "@/lib/enums";
 import { api } from "@/trpc/react";
 import { ChevronDown } from "lucide-react";
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { MealIngredientsProps } from "./MealIngredients.types";
+import { type MealIngredientsProps } from "./MealIngredients.types";
 import { MealIngredientsItem } from "./components/MealIngredientsItem";
 
 export const MealIngredients = ({ mealIngredients }: MealIngredientsProps) => {

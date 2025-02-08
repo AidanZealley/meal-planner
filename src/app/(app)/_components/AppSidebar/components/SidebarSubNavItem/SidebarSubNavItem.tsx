@@ -3,8 +3,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { SidebarSubNavItemProps } from "./SidebarSubNavItem.types";
-import Link from "next/link";
+import { type SidebarSubNavItemProps } from "./SidebarSubNavItem.types";
 import { useRouter } from "next/navigation";
 
 export const SidebarSubNavItem = ({

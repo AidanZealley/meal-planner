@@ -5,8 +5,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { SidebarNavItemProps } from "./SidebarNavItem.types";
-import Link from "next/link";
+import { type SidebarNavItemProps } from "./SidebarNavItem.types";
 import { useRouter } from "next/navigation";
 
 export const SidebarNavItem = ({

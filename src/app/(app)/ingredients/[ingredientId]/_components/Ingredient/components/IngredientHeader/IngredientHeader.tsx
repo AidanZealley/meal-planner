@@ -1,9 +1,7 @@
 import { Badge } from "@/components/ui/badge";
-import { IngredientHeaderProps } from "./IngredientHeader.types";
+import { type IngredientHeaderProps } from "./IngredientHeader.types";
 
 export const IngredientHeader = ({ ingredient }: IngredientHeaderProps) => {
-  const mealsCount = ingredient?.mealIngredients.length;
-
   return (
     <div className="grid gap-6">
       <div className="flex flex-col items-start gap-3 py-6">

@@ -1,5 +1,5 @@
-import { LucideProps } from "lucide-react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import { type LucideProps } from "lucide-react";
+import { type ForwardRefExoticComponent, type RefAttributes } from "react";
 
 export type SidebarNavItemProps = {
   title: string;

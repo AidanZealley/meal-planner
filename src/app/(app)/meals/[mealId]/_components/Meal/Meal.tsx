@@ -6,7 +6,7 @@ import { MealIngredients } from "./components/MealIngredients";
 import { NewIngredient } from "@/app/(app)/ingredients/_components/NewIngredient";
 import { Separator } from "@/components/ui/separator";
 import { MealHeader } from "./components/MealHeader";
-import { MealProps } from "./Meal.types";
+import { type MealProps } from "./Meal.types";
 
 export const Meal = ({ id }: MealProps) => {
   const [meal] = api.meals.getById.useSuspenseQuery({

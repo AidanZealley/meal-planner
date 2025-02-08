@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { IngredientListItemProps } from "./IngredientListItem.types";
+import { type IngredientListItemProps } from "./IngredientListItem.types";
 import { Pencil, SquareCheck, SquareX, Trash2, X } from "lucide-react";
 import { EditableIngredient } from "../EditableIngredient";
 import { cn } from "@/lib/utils";

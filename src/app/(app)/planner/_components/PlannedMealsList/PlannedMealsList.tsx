@@ -2,7 +2,7 @@
 
 import { api } from "@/trpc/react";
 import { PlannedMealsListItem } from "../PlannedMealsListItem";
-import { PlannedMealsListProps } from "./PlannedMealsList.types";
+import { type PlannedMealsListProps } from "./PlannedMealsList.types";
 
 export const PlannedMealsList = ({ status }: PlannedMealsListProps) => {
   const [plannedMeals] = api.plannedMeals.getAllByStatus.useSuspenseQuery({

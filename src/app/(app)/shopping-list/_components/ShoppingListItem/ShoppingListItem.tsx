@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { ShoppingListItemProps } from "./ShoppingListItem.types";
+import { type ShoppingListItemProps } from "./ShoppingListItem.types";
 import { api } from "@/trpc/react";
-import { Check, Square, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
 export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {

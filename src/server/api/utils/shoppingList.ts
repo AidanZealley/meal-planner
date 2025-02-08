@@ -1,13 +1,13 @@
 import { and, eq } from "drizzle-orm";
 
-import { Transaction } from "@/lib/types";
+import { type Transaction } from "@/lib/types";
 import {
   ingredients,
   mealIngredients,
   plannedMeals,
   shoppingList,
 } from "@/server/db/schema";
-import { Session } from "better-auth";
+import { type Session } from "better-auth";
 
 export const generateShoppingList = async (
   tx: Transaction,

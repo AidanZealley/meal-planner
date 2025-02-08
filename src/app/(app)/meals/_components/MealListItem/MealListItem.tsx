@@ -3,7 +3,7 @@ import { CalendarPlus, Pencil, Trash2, X } from "lucide-react";
 import { EditableMeal } from "../EditableMeal";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
-import { MealListItemProps } from "./MealListItem.types";
+import { type MealListItemProps } from "./MealListItem.types";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 

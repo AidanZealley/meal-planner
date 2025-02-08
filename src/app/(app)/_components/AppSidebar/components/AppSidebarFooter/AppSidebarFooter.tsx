@@ -30,7 +30,7 @@ export const AppSidebarFooter = () => {
   const initials = initialsFromName(user?.name);
 
   const handleSignOut = async () => {
-    signOut();
+    await signOut();
     router.push("/");
   };
 
@@ -53,7 +53,7 @@ export const AppSidebarFooter = () => {
                   </Avatar>
                   <div className="grid justify-start text-left">
                     <span className="font-bold">{user?.name}</span>
-                    <span className="text-muted-foreground text-xs">
+                    <span className="text-xs text-muted-foreground">
                       {user?.email}
                     </span>
                   </div>

@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { EditableMealProps } from "./EditableMeal.types";
+import { type EditableMealProps } from "./EditableMeal.types";
 import { Check } from "lucide-react";
 
 const formSchema = z.object({

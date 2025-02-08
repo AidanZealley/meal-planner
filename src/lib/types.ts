@@ -3,8 +3,8 @@ import type {
   DBQueryConfig,
   ExtractTablesWithRelations,
 } from "drizzle-orm";
-import * as schema from "@/server/db/schema";
-import { db } from "@/server/db";
+import type * as schema from "@/server/db/schema";
+import { type db } from "@/server/db";
 
 type Schema = typeof schema;
 type TSchema = ExtractTablesWithRelations<Schema>;

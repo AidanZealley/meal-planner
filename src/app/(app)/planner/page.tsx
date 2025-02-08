@@ -1,5 +1,4 @@
 import { api, HydrateClient } from "@/trpc/server";
-import { PlannedMealsList } from "./_components/PlannedMealsList";
 
 export default async function PlannerPage() {
   void api.plannedMeals.getAll.prefetch();

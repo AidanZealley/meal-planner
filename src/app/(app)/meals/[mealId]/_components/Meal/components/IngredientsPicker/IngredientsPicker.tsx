@@ -1,6 +1,6 @@
 import { api } from "@/trpc/react";
 import { IngredientsPickerItem } from "./components/IngredientsPickerItem";
-import { IngredientsPickerProps } from "./IngredientsPicker.types";
+import { type IngredientsPickerProps } from "./IngredientsPicker.types";
 
 export const IngredientsPicker = ({
   mealId,

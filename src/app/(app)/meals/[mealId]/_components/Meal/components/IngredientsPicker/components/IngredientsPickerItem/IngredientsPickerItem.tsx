@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { IngredientsPickerItemProps } from "./IngredientsPickerItem.types";
+import { type IngredientsPickerItemProps } from "./IngredientsPickerItem.types";
 import { api } from "@/trpc/react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
