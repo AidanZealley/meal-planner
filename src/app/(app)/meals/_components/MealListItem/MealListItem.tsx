@@ -97,7 +97,7 @@ export const MealListItem = ({
           <span
             className={cn(
               "transition-opacity",
-              !isEditingId || isEditing ? "opacity-100" : "opacity-30",
+              !isEditingId || isEditing ? "opacity-100" : "opacity-0",
             )}
           >
             {name}
