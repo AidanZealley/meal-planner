@@ -15,6 +15,7 @@ import { type PlannedMealStatusPickerProps } from "./PlannedMealStatusPicker.typ
 import { type PlannedMealStatus, PlannedMealStatusValues } from "@/lib/enums";
 import { api } from "@/trpc/react";
 import { ChevronDown } from "lucide-react";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export function PlannedMealStatusPicker({
   id,
@@ -22,7 +23,7 @@ export function PlannedMealStatusPicker({
 }: PlannedMealStatusPickerProps) {
   const utils = api.useUtils();
 
-  const { mutate } = api.plannedMeals.update.useMutation({
+  const { mutate, isPending } = api.plannedMeals.update.useMutation({
     onSuccess: async () => {
       await utils.meals.getById.invalidate();
       await utils.plannedMeals.getAllByStatus.invalidate();
@@ -40,12 +41,17 @@ export function PlannedMealStatusPicker({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="pr-2">
+        <LoadingButton
+          isLoading={isPending}
+          variant="outline"
+          size="sm"
+          className="pr-2"
+        >
           <span className="flex items-center gap-1">
             <span className="capitalize">{status}</span>
             <ChevronDown />
           </span>
-        </Button>
+        </LoadingButton>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuLabel>Status</DropdownMenuLabel>

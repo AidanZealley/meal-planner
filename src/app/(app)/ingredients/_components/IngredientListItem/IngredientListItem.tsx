@@ -5,6 +5,7 @@ import { EditableIngredient } from "../EditableIngredient";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import Link from "next/link";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export const IngredientListItem = ({
   ingredient,
@@ -17,19 +18,21 @@ export const IngredientListItem = ({
 
   const utils = api.useUtils();
 
-  const { mutate: deleteIngredient } = api.ingredients.delete.useMutation({
-    onSuccess: async () => {
-      await utils.ingredients.getAll.invalidate();
-      await utils.shoppingList.getAll.invalidate();
-    },
-  });
+  const { mutate: deleteIngredient, isPending: isDeletePending } =
+    api.ingredients.delete.useMutation({
+      onSuccess: async () => {
+        await utils.ingredients.getAll.invalidate();
+        await utils.shoppingList.getAll.invalidate();
+      },
+    });
 
-  const { mutate: updateStock } = api.ingredients.updateStock.useMutation({
-    onSuccess: async () => {
-      await utils.ingredients.getAll.invalidate();
-      await utils.shoppingList.getAll.invalidate();
-    },
-  });
+  const { mutate: updateStock, isPending: isUpdatePending } =
+    api.ingredients.updateStock.useMutation({
+      onSuccess: async () => {
+        await utils.ingredients.getAll.invalidate();
+        await utils.shoppingList.getAll.invalidate();
+      },
+    });
 
   const toggleEdit = () => {
     handleEdit(isEditing ? null : id);
@@ -75,12 +78,22 @@ export const IngredientListItem = ({
         <Button size="icon-sm" variant="ghost" onClick={toggleEdit}>
           {isEditing ? <X /> : <Pencil />}
         </Button>
-        <Button size="icon-sm" variant="secondary" onClick={handleUpdateStock}>
+        <LoadingButton
+          isLoading={isUpdatePending}
+          size="icon-sm"
+          variant="secondary"
+          onClick={handleUpdateStock}
+        >
           {inStock ? <SquareX /> : <SquareCheck />}
-        </Button>
-        <Button size="icon-sm" variant="destructive" onClick={handleDelete}>
+        </LoadingButton>
+        <LoadingButton
+          isLoading={isDeletePending}
+          size="icon-sm"
+          variant="destructive"
+          onClick={handleDelete}
+        >
           <Trash2 />
-        </Button>
+        </LoadingButton>
       </div>
     </div>
   );
