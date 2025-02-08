@@ -54,12 +54,17 @@ export const IngredientListItem = ({
   };
 
   return (
-    <div className="group grid grid-cols-[1fr_auto] items-center gap-2">
+    <div
+      className={cn(
+        "group relative grid grid-cols-[1fr_auto] items-center gap-2 rounded-lg p-1 pl-3 hover:bg-muted/50",
+        isEditing ? "bg-muted/50" : "",
+      )}
+    >
+      <Link href={`/ingredients/${id}`} className="absolute inset-0" />
       {isEditing ? (
         <EditableIngredient ingredient={ingredient} onUpdate={endEdit} />
       ) : (
-        <Link
-          href={`/ingredients/${id}`}
+        <span
           className={cn(
             "transition-all",
             !isEditingId || isEditing ? "opacity-100" : "opacity-30",
@@ -67,11 +72,11 @@ export const IngredientListItem = ({
           )}
         >
           {name}
-        </Link>
+        </span>
       )}
       <div
         className={cn(
-          "flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
+          "relative flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
           isEditing ? "opacity-100" : "",
         )}
       >

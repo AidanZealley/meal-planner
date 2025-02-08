@@ -20,6 +20,8 @@ import { LoadingButton } from "@/components/LoadingButton";
 export function PlannedMealStatusPicker({
   id,
   status,
+  open,
+  onOpenChange,
 }: PlannedMealStatusPickerProps) {
   const utils = api.useUtils();
 
@@ -39,7 +41,7 @@ export function PlannedMealStatusPicker({
   };
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={onOpenChange}>
       <DropdownMenuTrigger asChild>
         <LoadingButton
           isLoading={isPending}
@@ -53,7 +55,7 @@ export function PlannedMealStatusPicker({
           </span>
         </LoadingButton>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56">
+      <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>Status</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
