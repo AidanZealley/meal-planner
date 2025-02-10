@@ -32,8 +32,12 @@ export default function RootLayout({
         >
           <TRPCReactProvider>
             {children}
-            <Analytics />
-            <SpeedInsights />
+            {process.env.NODE_ENV === "production" && (
+              <>
+                <Analytics />
+                <SpeedInsights />
+              </>
+            )}
           </TRPCReactProvider>
         </ThemeProvider>
       </body>

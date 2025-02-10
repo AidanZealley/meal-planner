@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { type IngredientListItemProps } from "./IngredientListItem.types";
-import { Pencil, SquareCheck, SquareX, Trash2, X } from "lucide-react";
+import { Pencil, Trash2, X } from "lucide-react";
 import { EditableIngredient } from "../EditableIngredient";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
+import { UpdateStockDrawer } from "../UpdateStockDrawer";
 
 export const IngredientListItem = ({
   ingredient,
@@ -26,27 +27,12 @@ export const IngredientListItem = ({
       },
     });
 
-  const { mutate: updateStock, isPending: isUpdatePending } =
-    api.ingredients.updateStock.useMutation({
-      onSuccess: async () => {
-        await utils.ingredients.getAll.invalidate();
-        await utils.shoppingList.getAll.invalidate();
-      },
-    });
-
   const toggleEdit = () => {
     handleEdit(isEditing ? null : id);
   };
 
   const endEdit = () => {
     handleEdit(null);
-  };
-
-  const handleUpdateStock = () => {
-    updateStock({
-      id,
-      inStock: !inStock,
-    });
   };
 
   const handleDelete = () => {
@@ -83,14 +69,7 @@ export const IngredientListItem = ({
         <Button size="icon-sm" variant="ghost" onClick={toggleEdit}>
           {isEditing ? <X /> : <Pencil />}
         </Button>
-        <LoadingButton
-          isLoading={isUpdatePending}
-          size="icon-sm"
-          variant="secondary"
-          onClick={handleUpdateStock}
-        >
-          {inStock ? <SquareX /> : <SquareCheck />}
-        </LoadingButton>
+        <UpdateStockDrawer ingredient={ingredient} />
         <LoadingButton
           isLoading={isDeletePending}
           size="icon-sm"

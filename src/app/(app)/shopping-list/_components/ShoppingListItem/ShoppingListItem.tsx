@@ -6,14 +6,15 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { LoadingButton } from "@/components/LoadingButton";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/Spinner";
+import { Badge } from "@/components/ui/badge";
 
 export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const {
     ingredientId,
+    amountNeeded,
     done,
-    ingredient: { name },
+    ingredient: { name, amountAvailable },
   } = item;
-
   const utils = api.useUtils();
 
   const { mutate: updateItem, isPending: isUpdatePending } =
@@ -38,6 +39,8 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     deleteItem({ ingredientId });
   };
 
+  const showQuantity = amountNeeded !== null;
+
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3">
       <div className="grid grid-cols-[auto_1fr] items-center gap-3">
@@ -58,7 +61,10 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
           )}
         </span>
 
-        <span>{name}</span>
+        <span className="flex items-center gap-3">
+          {name}
+          {showQuantity && <Badge>{amountNeeded}</Badge>}
+        </span>
       </div>
 
       <LoadingButton

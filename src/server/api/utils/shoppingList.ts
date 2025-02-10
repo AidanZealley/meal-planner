@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, or, sql } from "drizzle-orm";
 
 import { type Transaction } from "@/lib/types";
 import {
@@ -13,37 +13,74 @@ export const generateShoppingList = async (
   tx: Transaction,
   session: Session,
 ) => {
-  const previousShoppingList = await tx.select().from(shoppingList);
+  // Fetch previous shopping list for the user
+  const previousShoppingList = await tx
+    .select()
+    .from(shoppingList)
+    .where(eq(shoppingList.userId, session.userId));
 
-  const outOfStockIngredientIds = await tx
-    .select({ ingredientId: mealIngredients.ingredientId })
+  // Find all out-of-stock ingredients across planned meals
+  const outOfStockIngredients = await tx
+    .select({
+      ingredientId: ingredients.id,
+      inStock: ingredients.inStock,
+      useAmount: ingredients.useAmount,
+      amountNeeded: sql<number>`
+        NULLIF(GREATEST(SUM(${mealIngredients.amountRequired}) - COALESCE(${ingredients.amountAvailable}, 0), 0), 0)
+      `.as("amount_needed"),
+    })
     .from(mealIngredients)
     .innerJoin(ingredients, eq(mealIngredients.ingredientId, ingredients.id))
-    .innerJoin(plannedMeals, eq(mealIngredients.mealId, plannedMeals.mealId))
+    .innerJoin(plannedMeals, eq(mealIngredients.mealId, plannedMeals.mealId)) // Ensure all planned meals are considered
     .where(
-      and(eq(plannedMeals.status, "planned"), eq(ingredients.inStock, false)),
+      and(
+        eq(plannedMeals.status, "planned"), // Include all planned meals
+        eq(mealIngredients.userId, session.userId), // Filter by user
+      ),
+    )
+    .groupBy(ingredients.id, ingredients.amountAvailable)
+    .having(
+      or(
+        sql`SUM(${mealIngredients.amountRequired}) > COALESCE(${ingredients.amountAvailable}, 0)`, // Amount-tracked ingredients (shortage)
+        and(eq(ingredients.useAmount, false), eq(ingredients.inStock, false)), // Boolean-tracked ingredients (out of stock)
+      ),
     );
 
-  const newIngredientIds = new Set(
-    outOfStockIngredientIds.map((row) => row.ingredientId),
-  );
-  const oldIngredientIds = new Set(
-    previousShoppingList.map((row) => row.ingredientId),
+  // Create sets for quick comparison
+  const newShoppingListMap = new Map(
+    outOfStockIngredients.map(({ ingredientId, amountNeeded }) => [
+      ingredientId,
+      amountNeeded,
+    ]),
   );
 
-  if (
-    newIngredientIds.size === oldIngredientIds.size &&
-    [...newIngredientIds].every((id) => oldIngredientIds.has(id))
-  ) {
+  const oldShoppingListMap = new Map(
+    previousShoppingList.map(({ ingredientId, amountNeeded }) => [
+      ingredientId,
+      amountNeeded,
+    ]),
+  );
+
+  // If the ingredient IDs AND amounts are the same, return early
+  const isSameList =
+    newShoppingListMap.size === oldShoppingListMap.size &&
+    [...newShoppingListMap].every(
+      ([id, amount]) => oldShoppingListMap.get(id) === amount,
+    );
+
+  if (isSameList) {
     return;
   }
 
-  await tx.delete(shoppingList);
+  // Delete only the current user's shopping list
+  await tx.delete(shoppingList).where(eq(shoppingList.userId, session.userId));
 
-  if (outOfStockIngredientIds.length) {
+  // Insert new shopping list items while preserving "done" state
+  if (outOfStockIngredients.length) {
     await tx.insert(shoppingList).values(
-      outOfStockIngredientIds.map(({ ingredientId }) => ({
+      outOfStockIngredients.map(({ ingredientId, amountNeeded }) => ({
         ingredientId,
+        amountNeeded, // Null for ingredients with useAmount: false
         done:
           previousShoppingList.find(
             (item) => item.ingredientId === ingredientId,

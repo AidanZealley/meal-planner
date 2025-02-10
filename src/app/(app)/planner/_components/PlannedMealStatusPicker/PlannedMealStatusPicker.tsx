@@ -19,6 +19,7 @@ import { LoadingButton } from "@/components/LoadingButton";
 
 export function PlannedMealStatusPicker({
   id,
+  mealId,
   status,
   open,
   onOpenChange,
@@ -27,9 +28,18 @@ export function PlannedMealStatusPicker({
 
   const { mutate, isPending } = api.plannedMeals.update.useMutation({
     onSuccess: async () => {
-      await utils.meals.getById.invalidate();
-      await utils.plannedMeals.getAllByStatus.invalidate();
-      await utils.shoppingList.getAll.invalidate();
+      await Promise.all([
+        utils.meals.getById.invalidate({
+          id: mealId,
+        }),
+        utils.plannedMeals.getAllByStatus.invalidate({
+          status: "planned",
+        }),
+        utils.plannedMeals.getAllByStatus.invalidate({
+          status: "cooked",
+        }),
+        utils.shoppingList.getAll.invalidate(),
+      ]);
     },
   });
 

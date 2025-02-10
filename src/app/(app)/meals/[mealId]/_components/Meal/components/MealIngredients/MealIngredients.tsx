@@ -9,8 +9,7 @@ export const MealIngredients = ({ mealIngredients }: MealIngredientsProps) => {
       {mealIngredients?.map((mealIngredient) => (
         <MealIngredientsItem
           key={mealIngredient.ingredientId}
-          ingredient={mealIngredient.ingredient}
-          mealId={mealIngredient.mealId}
+          mealIngredient={mealIngredient}
         />
       ))}
     </div>

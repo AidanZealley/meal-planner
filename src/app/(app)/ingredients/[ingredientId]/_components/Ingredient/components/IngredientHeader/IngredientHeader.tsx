@@ -10,6 +10,10 @@ export const IngredientHeader = ({ ingredient }: IngredientHeaderProps) => {
         <Badge variant={ingredient?.inStock ? "default" : "destructive"}>
           {ingredient?.inStock ? "In Stock" : "Out of Stock"}
         </Badge>
+
+        {ingredient?.useAmount && (
+          <span>{ingredient.amountAvailable} in stock</span>
+        )}
       </div>
     </div>
   );

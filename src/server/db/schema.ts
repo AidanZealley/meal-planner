@@ -4,6 +4,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   pgTableCreator,
   text,
   timestamp,
@@ -51,7 +52,10 @@ export const ingredients = createTable(
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
     name: varchar("name", { length: 256 }).notNull().unique(),
-    inStock: boolean("inStock").default(true).notNull(),
+    inStock: boolean("in_stock").default(true).notNull(),
+    amountAvailable: integer("amount_available").default(1).notNull(),
+    useAmount: boolean("use_amount").default(false).notNull(),
+    unit: varchar("unit", { length: 16 }),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -80,6 +84,7 @@ export const mealIngredients = createTable(
   "meal_ingredients",
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
+    amountRequired: integer("amount_required").default(1),
     mealId: uuid("meal_id")
       .notNull()
       .references(() => meals.id, { onDelete: "cascade" }),
@@ -170,6 +175,7 @@ export const shoppingList = createTable(
       .notNull()
       .unique()
       .references(() => ingredients.id, { onDelete: "cascade" }),
+    amountNeeded: integer("amount_needed"),
     done: boolean("done").default(false).notNull(),
     userId: text("user_id")
       .notNull()
