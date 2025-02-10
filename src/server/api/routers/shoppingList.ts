@@ -29,6 +29,7 @@ export const shoppingListRouter = createTRPCRouter({
       .select({
         id: shoppingList.id,
         ingredientId: shoppingList.ingredientId,
+        amountNeeded: shoppingList.amountNeeded,
         done: shoppingList.done,
         createdAt: shoppingList.createdAt,
         ingredientName: ingredients.name,

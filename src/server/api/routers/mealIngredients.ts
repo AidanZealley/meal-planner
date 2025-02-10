@@ -35,6 +35,20 @@ export const mealIngredientsRouter = createTRPCRouter({
       });
     }),
 
+  updateAmountRequired: protectedProcedure
+    .input(z.object({ id: z.string(), amount: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await ctx.db
+          .update(mealIngredients)
+          .set({
+            amountRequired: input.amount,
+          })
+          .where(eq(mealIngredients.id, input.id));
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
   getAll: protectedProcedure
     .input(z.object({ mealId: z.string() }))
     .query(async ({ ctx, input }) => {

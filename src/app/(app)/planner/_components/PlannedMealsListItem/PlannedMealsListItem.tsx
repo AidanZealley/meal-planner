@@ -23,13 +23,15 @@ export const PlannedMealsListItem = ({
 
   const { mutate, isPending } = api.plannedMeals.delete.useMutation({
     onSuccess: async () => {
-      await utils.plannedMeals.getAllByStatus.invalidate({
-        status: "planned",
-      });
-      await utils.plannedMeals.getAllByStatus.invalidate({
-        status: "cooked",
-      });
-      await utils.meals.getAll.invalidate();
+      await Promise.all([
+        utils.plannedMeals.getAllByStatus.invalidate({
+          status: "planned",
+        }),
+        utils.plannedMeals.getAllByStatus.invalidate({
+          status: "cooked",
+        }),
+        utils.meals.getAll.invalidate(),
+      ]);
     },
   });
 
@@ -54,6 +56,7 @@ export const PlannedMealsListItem = ({
       >
         <PlannedMealStatusPicker
           id={id}
+          mealId={mealId}
           status={status}
           open={statusPickerOpen}
           onOpenChange={setStatusPickerOpen}

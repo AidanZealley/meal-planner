@@ -31,7 +31,27 @@ export const ingredientsRouter = createTRPCRouter({
         .where(eq(ingredients.id, input.id));
     }),
 
-  updateStock: protectedProcedure
+  updateUseAmount: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+        useAmount: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(ingredients)
+          .set({
+            useAmount: input.useAmount,
+          })
+          .where(eq(ingredients.id, input.id));
+
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
+  updateInStock: protectedProcedure
     .input(
       z.object({
         id: z.string().min(1),
@@ -44,6 +64,46 @@ export const ingredientsRouter = createTRPCRouter({
           .update(ingredients)
           .set({
             inStock: input.inStock,
+          })
+          .where(eq(ingredients.id, input.id));
+
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
+  updateAmountAvailable: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+        amountAvailable: z.number().min(0),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(ingredients)
+          .set({
+            amountAvailable: input.amountAvailable,
+          })
+          .where(eq(ingredients.id, input.id));
+
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
+  updateUnit: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+        unit: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(ingredients)
+          .set({
+            unit: input.unit,
           })
           .where(eq(ingredients.id, input.id));
 
