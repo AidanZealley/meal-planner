@@ -6,15 +6,13 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { type SidebarNavItemProps } from "./SidebarNavItem.types";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-export const SidebarNavItem = ({
-  title,
-  url,
-  icon,
-  isActive,
-}: SidebarNavItemProps) => {
+export const SidebarNavItem = ({ title, url, icon }: SidebarNavItemProps) => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isActive = pathname === url;
 
   const { setOpenMobile } = useSidebar();
 

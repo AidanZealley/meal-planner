@@ -3,7 +3,6 @@
 import { SidebarMenu } from "@/components/ui/sidebar";
 import { Carrot, Utensils } from "lucide-react";
 import { SidebarNavItem } from "../SidebarNavItem";
-import { usePathname } from "next/navigation";
 
 const items = [
   {
@@ -19,8 +18,6 @@ const items = [
 ];
 
 export const SidebarManageNav = () => {
-  const pathname = usePathname();
-
   return (
     <SidebarMenu>
       {items.map(({ title, url, icon }, index) => (
@@ -29,7 +26,6 @@ export const SidebarManageNav = () => {
           title={title}
           url={url}
           icon={icon}
-          isActive={pathname.includes(url)}
         />
       ))}
     </SidebarMenu>

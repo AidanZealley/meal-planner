@@ -14,7 +14,7 @@ export const IngredientsPicker = ({
     : ingredients;
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-1">
       {unusedIngredients.map((ingredient) => (
         <IngredientsPickerItem
           key={ingredient.id}

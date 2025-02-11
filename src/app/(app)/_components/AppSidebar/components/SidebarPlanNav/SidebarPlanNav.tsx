@@ -3,7 +3,6 @@
 import { SidebarMenu, SidebarMenuSub } from "@/components/ui/sidebar";
 import { Calendar, ListCheck } from "lucide-react";
 import { SidebarNavItem } from "../SidebarNavItem";
-import { usePathname } from "next/navigation";
 import { SidebarSubNavItem } from "../SidebarSubNavItem";
 import { Fragment } from "react";
 
@@ -31,18 +30,11 @@ const items = [
 ];
 
 export const SidebarPlanNav = () => {
-  const pathname = usePathname();
-
   return (
     <SidebarMenu>
       {items.map(({ title, url, icon, subItems }, index) => (
         <Fragment key={`${url}_${index}`}>
-          <SidebarNavItem
-            title={title}
-            url={url}
-            icon={icon}
-            isActive={pathname.includes(url)}
-          />
+          <SidebarNavItem title={title} url={url} icon={icon} />
           {subItems && (
             <SidebarMenuSub>
               {subItems.map((subItem) => (
@@ -50,7 +42,6 @@ export const SidebarPlanNav = () => {
                   key={`${subItem.url}_${index}`}
                   title={subItem.title}
                   url={subItem.url}
-                  isActive={pathname === subItem.url}
                 />
               ))}
             </SidebarMenuSub>
