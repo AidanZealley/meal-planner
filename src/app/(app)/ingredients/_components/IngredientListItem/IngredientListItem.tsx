@@ -7,6 +7,7 @@ import { api } from "@/trpc/react";
 import Link from "next/link";
 import { LoadingButton } from "@/components/LoadingButton";
 import { UpdateStockDrawer } from "../UpdateStockDrawer";
+import { Badge } from "@/components/ui/badge";
 
 export const IngredientListItem = ({
   ingredient,
@@ -52,12 +53,12 @@ export const IngredientListItem = ({
       ) : (
         <span
           className={cn(
-            "transition-all",
+            "flex items-center gap-3 transition-opacity",
             !isEditingId || isEditing ? "opacity-100" : "opacity-30",
-            !inStock ? "text-destructive line-through" : "",
           )}
         >
           {name}
+          {!inStock && <Badge variant="destructive">Out of stock</Badge>}
         </span>
       )}
       <div

@@ -50,20 +50,34 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
             onCheckedChange={handleUpdate}
             className={cn(
               "transition-opacity",
-              isUpdatePending ? "opacity-50" : "opacity-100",
+              isUpdatePending ? "opacity-0" : "opacity-100",
             )}
           />
 
           {isUpdatePending && (
             <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-              <Spinner />
+              <Spinner className="h-4 w-4" />
             </span>
           )}
         </span>
 
         <span className="flex items-center gap-3">
-          {name}
-          {showQuantity && <Badge>{amountNeeded}</Badge>}
+          <span
+            className={cn(
+              "transition-all",
+              done ? "line-through opacity-30" : "",
+            )}
+          >
+            {name}
+          </span>
+          {showQuantity && (
+            <Badge
+              variant="secondary"
+              className={cn("transition-opacity", done ? "opacity-30" : "")}
+            >
+              {amountNeeded}
+            </Badge>
+          )}
         </span>
       </div>
 
