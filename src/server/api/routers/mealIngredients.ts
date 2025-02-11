@@ -23,7 +23,7 @@ export const mealIngredientsRouter = createTRPCRouter({
     .input(z.object({ mealId: z.string(), ingredientId: z.string() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
-        await ctx.db
+        await tx
           .delete(mealIngredients)
           .where(
             and(
