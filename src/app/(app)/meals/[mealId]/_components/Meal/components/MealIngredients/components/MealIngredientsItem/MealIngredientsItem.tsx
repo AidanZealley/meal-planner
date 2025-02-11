@@ -57,6 +57,7 @@ export const MealIngredientsItem = ({
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center gap-3">
       <LoadingButton
+        variant="secondary"
         isLoading={isPendingDeleteMealIngredient}
         size="icon-sm"
         onClick={handleRemoveIngredient}
@@ -69,6 +70,7 @@ export const MealIngredientsItem = ({
       {useAmount && (
         <div className="flex items-center gap-1">
           <LoadingButton
+            variant="outline"
             isLoading={isPendingUpdateAmountRequired}
             size="icon-sm"
             onClick={() => handleUpdateRequiredAmount(-1)}
@@ -77,6 +79,7 @@ export const MealIngredientsItem = ({
           </LoadingButton>
           <span className="px-2">{amountRequired}</span>
           <LoadingButton
+            variant="outline"
             isLoading={isPendingUpdateAmountRequired}
             size="icon-sm"
             onClick={() => handleUpdateRequiredAmount(1)}

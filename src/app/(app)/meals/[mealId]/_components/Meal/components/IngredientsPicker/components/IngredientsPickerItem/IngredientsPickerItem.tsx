@@ -32,6 +32,7 @@ export const IngredientsPickerItem = ({
   return (
     <div className="grid grid-cols-[auto_1fr] items-center gap-3">
       <LoadingButton
+        variant="secondary"
         isLoading={isPending}
         size="icon-sm"
         onClick={handlePickIngredient}

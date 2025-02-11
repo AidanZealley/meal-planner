@@ -93,16 +93,14 @@ export const MealListItem = ({
       {isEditing ? (
         <EditableMeal id={id} name={name} onUpdate={endEdit} />
       ) : (
-        <div className="flex items-center gap-3">
-          <span
-            className={cn(
-              "transition-opacity",
-              !isEditingId || isEditing ? "opacity-100" : "opacity-0",
-            )}
-          >
-            {name}
-          </span>
-          {activePlan && <Badge>{activePlan.status}</Badge>}
+        <div
+          className={cn(
+            "flex items-center gap-3 transition-opacity",
+            !isEditingId || isEditing ? "opacity-100" : "opacity-30",
+          )}
+        >
+          {name}
+          {activePlan && <Badge variant="secondary">{activePlan.status}</Badge>}
         </div>
       )}
       <div
