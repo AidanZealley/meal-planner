@@ -1,19 +1,33 @@
 import { Badge } from "@/components/ui/badge";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { type IngredientHeaderProps } from "./IngredientHeader.types";
 
 export const IngredientHeader = ({ ingredient }: IngredientHeaderProps) => {
+  const notInStock =
+    !ingredient?.inStock ||
+    (ingredient?.useAmount && ingredient?.amountAvailable === 0);
+
   return (
     <div className="grid gap-6">
-      <div className="flex flex-col items-start gap-3 py-6">
-        <h1 className="text-3xl font-bold">{ingredient?.name}</h1>
-
-        <Badge variant={ingredient?.inStock ? "default" : "destructive"}>
-          {ingredient?.inStock ? "In Stock" : "Out of Stock"}
-        </Badge>
-
-        {ingredient?.useAmount && (
-          <span>{ingredient.amountAvailable} in stock</span>
-        )}
+      <div className="grid gap-3 py-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/ingredients">Ingredients</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </BreadcrumbList>
+        </Breadcrumb>
+        <h1 className="flex items-center gap-3 text-3xl font-bold">
+          {ingredient?.name}
+          {notInStock && <Badge variant="destructive">out of stock</Badge>}
+        </h1>
       </div>
     </div>
   );

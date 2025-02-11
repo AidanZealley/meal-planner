@@ -14,7 +14,7 @@ export const MealsList = () => {
   };
 
   return (
-    <div className="grid gap-3 pl-3 pr-5">
+    <div className="grid gap-1 pl-3 pr-5">
       {meals.map((meal) => (
         <MealListItem
           key={meal.id}

@@ -1,6 +1,13 @@
 import { Badge } from "@/components/ui/badge";
-import { type MealHeaderProps } from "./MealHeader.types";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
+import { type MealHeaderProps } from "./MealHeader.types";
 
 export const MealHeader = ({ meal }: MealHeaderProps) => {
   const currentlyPlanned = meal?.plannedMeals.find(
@@ -12,12 +19,21 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
 
   return (
     <div className="grid gap-6">
-      <div className="flex flex-col items-start gap-3 py-6">
-        <h1 className="text-3xl font-bold">{meal?.name}</h1>
-
-        {currentlyPlanned && (
-          <Badge variant="secondary">{currentlyPlanned.status}</Badge>
-        )}
+      <div className="grid gap-3 py-2">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/ingredients">Meals</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+          </BreadcrumbList>
+        </Breadcrumb>
+        <h1 className="flex items-center gap-3 text-3xl font-bold">
+          {meal?.name}
+          {currentlyPlanned && (
+            <Badge variant="secondary">{currentlyPlanned.status}</Badge>
+          )}
+        </h1>
       </div>
 
       <div className="grid grid-cols-2 gap-6">

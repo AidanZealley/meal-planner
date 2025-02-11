@@ -5,7 +5,7 @@ import { MealIngredientsItem } from "./components/MealIngredientsItem";
 
 export const MealIngredients = ({ mealIngredients }: MealIngredientsProps) => {
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-1">
       {mealIngredients?.map((mealIngredient) => (
         <MealIngredientsItem
           key={mealIngredient.ingredientId}
