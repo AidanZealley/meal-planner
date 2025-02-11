@@ -4,13 +4,14 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { type SidebarSubNavItemProps } from "./SidebarSubNavItem.types";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-export const SidebarSubNavItem = ({ title, url }: SidebarSubNavItemProps) => {
+export const SidebarSubNavItem = ({
+  title,
+  url,
+  isActive,
+}: SidebarSubNavItemProps) => {
   const router = useRouter();
-  const pathname = usePathname();
-
-  const isActive = pathname === url;
 
   const { setOpenMobile } = useSidebar();
 

@@ -13,7 +13,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     ingredientId,
     amountNeeded,
     done,
-    ingredient: { name, amountAvailable },
+    ingredient: { name, useAmount },
   } = item;
   const utils = api.useUtils();
 
@@ -39,7 +39,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     deleteItem({ ingredientId });
   };
 
-  const showQuantity = amountNeeded !== null;
+  const showQuantity = useAmount;
 
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3">

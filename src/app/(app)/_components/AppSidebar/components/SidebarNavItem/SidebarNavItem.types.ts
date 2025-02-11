@@ -7,4 +7,5 @@ export type SidebarNavItemProps = {
   icon: ForwardRefExoticComponent<
     Omit<LucideProps, "ref"> & RefAttributes<SVGSVGElement>
   >;
+  isActive: boolean;
 };
