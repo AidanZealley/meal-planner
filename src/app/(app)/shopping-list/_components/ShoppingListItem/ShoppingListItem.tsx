@@ -32,10 +32,18 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     });
 
   const handleUpdate = () => {
+    if (!ingredientId) {
+      return;
+    }
+
     updateItem({ ingredientId, done: !done });
   };
 
   const handleDelete = () => {
+    if (!ingredientId) {
+      return;
+    }
+
     deleteItem({ ingredientId });
   };
 

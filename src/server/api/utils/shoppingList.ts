@@ -8,6 +8,7 @@ import {
   shoppingList,
 } from "@/server/db/schema";
 import { type Session } from "better-auth";
+import { ShoppingListTypeEnum, ShoppingListTypeValues } from "@/lib/enums";
 
 export const generateShoppingList = async (
   tx: Transaction,
@@ -80,6 +81,7 @@ export const generateShoppingList = async (
     await tx.insert(shoppingList).values(
       outOfStockIngredients.map(({ ingredientId, amountNeeded }) => ({
         ingredientId,
+        type: ShoppingListTypeEnum.Ingredient,
         amountNeeded, // Null for ingredients with useAmount: false
         done:
           previousShoppingList.find(
