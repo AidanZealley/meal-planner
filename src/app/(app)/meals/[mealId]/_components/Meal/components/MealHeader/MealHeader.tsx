@@ -7,6 +7,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
+import { formatDate } from "date-fns";
 import { type MealHeaderProps } from "./MealHeader.types";
 
 export const MealHeader = ({ meal }: MealHeaderProps) => {
@@ -16,6 +17,10 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
   const cookedCount = meal?.plannedMeals.filter(
     (plannedMeal) => plannedMeal.status === "cooked",
   ).length;
+
+  if (!meal) {
+    return null;
+  }
 
   return (
     <div className="grid gap-6">
@@ -28,12 +33,17 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
             <BreadcrumbSeparator />
           </BreadcrumbList>
         </Breadcrumb>
-        <h1 className="flex items-center gap-3 text-3xl font-bold">
-          {meal?.name}
-          {currentlyPlanned && (
-            <Badge variant="secondary">{currentlyPlanned.status}</Badge>
-          )}
-        </h1>
+        <div className="grid gap-3">
+          <h1 className="flex items-center gap-3 text-3xl font-bold">
+            {meal?.name}
+            {currentlyPlanned && (
+              <Badge variant="secondary">{currentlyPlanned.status}</Badge>
+            )}
+          </h1>
+          <span className="text-xs text-muted-foreground">
+            Created {formatDate(meal?.createdAt, "do, MMM")}
+          </span>
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-6">

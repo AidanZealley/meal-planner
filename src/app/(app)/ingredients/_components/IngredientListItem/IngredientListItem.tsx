@@ -5,7 +5,6 @@ import { EditableIngredient } from "../EditableIngredient";
 import { cn } from "@/lib/utils";
 import { api } from "@/trpc/react";
 import Link from "next/link";
-import { LoadingButton } from "@/components/LoadingButton";
 import { UpdateStockDrawer } from "../UpdateStockDrawer";
 import { Badge } from "@/components/ui/badge";
 
@@ -18,26 +17,12 @@ export const IngredientListItem = ({
 
   const isEditing = isEditingId === id;
 
-  const utils = api.useUtils();
-
-  const { mutate: deleteIngredient, isPending: isDeletePending } =
-    api.ingredients.delete.useMutation({
-      onSuccess: async () => {
-        await utils.ingredients.getAll.invalidate();
-        await utils.shoppingList.getAll.invalidate();
-      },
-    });
-
   const toggleEdit = () => {
     handleEdit(isEditing ? null : id);
   };
 
   const endEdit = () => {
     handleEdit(null);
-  };
-
-  const handleDelete = () => {
-    deleteIngredient({ id });
   };
 
   return (
@@ -71,14 +56,6 @@ export const IngredientListItem = ({
           {isEditing ? <X /> : <Pencil />}
         </Button>
         <UpdateStockDrawer ingredient={ingredient} />
-        <LoadingButton
-          isLoading={isDeletePending}
-          size="icon-sm"
-          variant="destructive"
-          onClick={handleDelete}
-        >
-          <Trash2 />
-        </LoadingButton>
       </div>
     </div>
   );
