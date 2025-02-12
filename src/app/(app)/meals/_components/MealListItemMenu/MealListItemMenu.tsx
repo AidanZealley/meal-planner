@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MealListItemMenuProps } from "./MealListItemMenu.types";
+import { type MealListItemMenuProps } from "./MealListItemMenu.types";
 import { api } from "@/trpc/react";
 import { Spinner } from "@/components/Spinner";
 import Link from "next/link";

@@ -13,9 +13,8 @@ import {
   DrawerDescription,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { DrawerDialogProps } from "./DrawerDialog.types";
+import { type DrawerDialogProps } from "./DrawerDialog.types";
 
 export function DrawerDialog({
   open,
@@ -31,11 +30,7 @@ export function DrawerDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        {customTrigger ? (
-          customTrigger
-        ) : (
-          <DialogTrigger asChild>{trigger}</DialogTrigger>
-        )}
+        {customTrigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
@@ -51,11 +46,7 @@ export function DrawerDialog({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      {customTrigger ? (
-        customTrigger
-      ) : (
-        <DialogTrigger asChild>{trigger}</DialogTrigger>
-      )}
+      {customTrigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>

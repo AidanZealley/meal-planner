@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { DialogTrigger } from "@radix-ui/react-dialog";
-import { IngredientListItemMenuProps } from "./IngredientListItemMenu.types";
+import { type IngredientListItemMenuProps } from "./IngredientListItemMenu.types";
 import { api } from "@/trpc/react";
 import { Spinner } from "@/components/Spinner";
 import Link from "next/link";
