@@ -23,6 +23,7 @@ export function DrawerDialog({
   title,
   description,
   trigger,
+  customTrigger,
   children,
 }: DrawerDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -30,7 +31,11 @@ export function DrawerDialog({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogTrigger asChild>{trigger}</DialogTrigger>
+        {customTrigger ? (
+          customTrigger
+        ) : (
+          <DialogTrigger asChild>{trigger}</DialogTrigger>
+        )}
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
@@ -46,7 +51,11 @@ export function DrawerDialog({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+      {customTrigger ? (
+        customTrigger
+      ) : (
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+      )}
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>

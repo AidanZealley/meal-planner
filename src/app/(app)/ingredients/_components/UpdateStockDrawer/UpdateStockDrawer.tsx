@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { IngredientListItemMenu } from "../IngredientListItemMenu";
 
 const formSchema = z.object({
   amountAvailable: z.string().min(0),
@@ -85,11 +86,7 @@ export const UpdateStockDrawer = ({ ingredient }: UpdateStockDrawerProps) => {
     <DrawerDialog
       title="Update Stock"
       description="Enable amount to allow setting a required amount in meals which will be reflected in the shopping list for planned meals."
-      trigger={
-        <Button variant="secondary" size="icon-sm">
-          <SquareStack />
-        </Button>
-      }
+      customTrigger={<IngredientListItemMenu id={id} />}
     >
       <div className="grid gap-3">
         <div className="flex items-center space-x-2">
