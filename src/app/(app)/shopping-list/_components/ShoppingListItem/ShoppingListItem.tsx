@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { type ShoppingListItemProps } from "./ShoppingListItem.types";
 import { api } from "@/trpc/react";
 import { Trash2 } from "lucide-react";

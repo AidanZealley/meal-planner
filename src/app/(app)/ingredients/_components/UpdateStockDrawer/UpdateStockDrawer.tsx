@@ -1,7 +1,6 @@
 import { DrawerDialog } from "@/components/DrawerDialog";
-import { Button } from "@/components/ui/button";
-import { Save, SquareCheck, SquareStack, SquareX } from "lucide-react";
-import { UpdateStockDrawerProps } from "./UpdateStockDrawer.types";
+import { Save, SquareCheck, SquareX } from "lucide-react";
+import { type UpdateStockDrawerProps } from "./UpdateStockDrawer.types";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { api } from "@/trpc/react";
@@ -28,7 +27,7 @@ export const UpdateStockDrawer = ({ ingredient }: UpdateStockDrawerProps) => {
   const { id, inStock, amountAvailable, useAmount } = ingredient;
   const utils = api.useUtils();
 
-  const { mutate: updateUseAmount, isPending: isUpdateUseAmountPending } =
+  const { mutate: updateUseAmount } =
     api.ingredients.updateUseAmount.useMutation({
       onSuccess: async () => {
         await utils.ingredients.getAll.invalidate();

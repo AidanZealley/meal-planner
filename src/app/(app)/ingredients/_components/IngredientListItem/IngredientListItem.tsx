@@ -1,9 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { type IngredientListItemProps } from "./IngredientListItem.types";
-import { Pencil, Trash2, X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import { EditableIngredient } from "../EditableIngredient";
 import { cn } from "@/lib/utils";
-import { api } from "@/trpc/react";
 import Link from "next/link";
 import { UpdateStockDrawer } from "../UpdateStockDrawer";
 import { Badge } from "@/components/ui/badge";
