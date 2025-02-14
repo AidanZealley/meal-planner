@@ -8,7 +8,7 @@ import {
   shoppingList,
 } from "@/server/db/schema";
 import { type Session } from "better-auth";
-import { ShoppingListTypeEnum, ShoppingListTypeValues } from "@/lib/enums";
+import { ShoppingListTypeEnum } from "@/lib/enums";
 
 export const generateShoppingList = async (
   tx: Transaction,

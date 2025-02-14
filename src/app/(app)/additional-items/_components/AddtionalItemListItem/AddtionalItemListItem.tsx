@@ -30,7 +30,7 @@ export const AddtionalItemListItem = ({
         isEditing ? "bg-muted/50" : "",
       )}
     >
-      <Link href={`/additionalItems/${id}`} className="absolute inset-0" />
+      <Link href={`/additional-items/${id}`} className="absolute inset-0" />
       {isEditing ? (
         <EditableAddtionalItem id={id} name={name} onUpdate={endEdit} />
       ) : (

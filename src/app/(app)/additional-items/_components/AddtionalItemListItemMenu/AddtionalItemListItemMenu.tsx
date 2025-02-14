@@ -1,10 +1,4 @@
-import {
-  CalendarMinus,
-  CalendarPlus,
-  MoreVertical,
-  Salad,
-  Trash2,
-} from "lucide-react";
+import { MoreVertical, Salad, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AddtionalItemListItemMenuProps } from "./AddtionalItemListItemMenu.types";
+import type { AddtionalItemListItemMenuProps } from "./AddtionalItemListItemMenu.types";
 import { api } from "@/trpc/react";
 import { Spinner } from "@/components/Spinner";
 import Link from "next/link";
@@ -45,7 +39,7 @@ export const AddtionalItemListItemMenu = ({
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end">
         <DropdownMenuGroup>
-          <Link href={`/additionalItems/${id}`}>
+          <Link href={`/additional-items/${id}`}>
             <DropdownMenuItem>
               <Salad />
               <span>View</span>
