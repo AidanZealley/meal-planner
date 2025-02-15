@@ -28,7 +28,7 @@ export const SidebarNavItem = ({
   return (
     <SidebarMenuItem key={title}>
       <SidebarMenuButton isActive={isActive} onClick={handleNavigate}>
-        <Icon />
+        <Icon className="text-accent-foreground" />
         <span>{title}</span>
       </SidebarMenuButton>
     </SidebarMenuItem>

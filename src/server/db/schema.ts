@@ -1,5 +1,5 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
-import { PlannedMealStatusValues } from "@/lib/enums";
+import { PlannedMealStatusValues, ShoppingListTypeValues } from "@/lib/enums";
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
@@ -51,7 +51,8 @@ export const ingredients = createTable(
   "ingredients",
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
-    name: varchar("name", { length: 256 }).notNull().unique(),
+    name: varchar("name", { length: 256 }).notNull(),
+    deleted: boolean("deleted").default(false).notNull(),
     inStock: boolean("in_stock").default(true).notNull(),
     amountAvailable: integer("amount_available").default(1).notNull(),
     useAmount: boolean("use_amount").default(false).notNull(),
@@ -68,12 +69,14 @@ export const ingredients = createTable(
   },
   (ingredient) => ({
     nameIndex: index("ingredient_name_idx").on(ingredient.name),
+    nameUnique: unique("ingredient_name_unique").on(ingredient.id),
     userIndex: index("ingredient_user_idx").on(ingredient.userId),
   }),
 );
 
 export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
   mealIngredients: many(mealIngredients),
+  shoppingListEntries: many(shoppingList),
   user: one(user, {
     fields: [ingredients.userId],
     references: [user.id],
@@ -167,14 +170,54 @@ export const plannedMealsRelations = relations(plannedMeals, ({ one }) => ({
   }),
 }));
 
+export const additionalItems = createTable(
+  "additionalItems",
+  {
+    id: uuid("id").defaultRandom().primaryKey().notNull(),
+    name: varchar("name", { length: 256 }).notNull(),
+    deleted: boolean("deleted").default(false).notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .default(sql`CURRENT_TIMESTAMP`)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).$onUpdate(
+      () => new Date(),
+    ),
+  },
+  (meal) => ({
+    nameIndex: index("additional_items_name_idx").on(meal.name),
+    userIndex: index("additional_items_user_idx").on(meal.userId),
+  }),
+);
+
+export const additionalItemsRelations = relations(
+  additionalItems,
+  ({ one, many }) => ({
+    shoppingListEntries: many(shoppingList),
+    user: one(user, {
+      fields: [additionalItems.userId],
+      references: [user.id],
+    }),
+  }),
+);
+
 export const shoppingList = createTable(
   "shopping_list",
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
-    ingredientId: uuid("ingredient_id")
-      .notNull()
-      .unique()
-      .references(() => ingredients.id, { onDelete: "cascade" }),
+    ingredientId: uuid("ingredient_id").references(() => ingredients.id, {
+      onDelete: "cascade",
+    }),
+    additionalItemId: uuid("additional_item_id").references(
+      () => additionalItems.id,
+      { onDelete: "cascade" },
+    ),
+    type: varchar("type", {
+      length: 32,
+      enum: ShoppingListTypeValues,
+    }).default("ingredient"),
     amountNeeded: integer("amount_needed"),
     done: boolean("done").default(false).notNull(),
     userId: text("user_id")
@@ -191,6 +234,12 @@ export const shoppingList = createTable(
     ingredientUnique: unique("shopping_list_ingredient_unique").on(
       shoppingList.ingredientId,
     ),
+    additionalItemIndex: index("shopping_list_additional_item_idx").on(
+      shoppingList.additionalItemId,
+    ),
+    additionalItemUnique: unique("shopping_list_additional_item_unique").on(
+      shoppingList.additionalItemId,
+    ),
     userIndex: index("shopping_list_user_idx").on(shoppingList.userId),
   }),
 );
@@ -199,6 +248,10 @@ export const shoppingListRelations = relations(shoppingList, ({ one }) => ({
   ingredient: one(ingredients, {
     fields: [shoppingList.ingredientId],
     references: [ingredients.id],
+  }),
+  additionalItem: one(additionalItems, {
+    fields: [shoppingList.additionalItemId],
+    references: [additionalItems.id],
   }),
   user: one(user, {
     fields: [shoppingList.userId],

@@ -1,18 +1,18 @@
-import { type ShoppingListItemProps } from "./ShoppingListItem.types";
+import { type ShoppingAdditionalItemsListItemProps } from "./ShoppingAdditionalItemsListItem.types";
 import { api } from "@/trpc/react";
 import { Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LoadingButton } from "@/components/LoadingButton";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/Spinner";
-import { Badge } from "@/components/ui/badge";
 
-export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
+export const ShoppingAdditionalItemsListItem = ({
+  item,
+}: ShoppingAdditionalItemsListItemProps) => {
   const {
-    ingredientId,
-    amountNeeded,
+    id,
     done,
-    ingredient: { name, useAmount },
+    additionalItem: { name },
   } = item;
   const utils = api.useUtils();
 
@@ -31,14 +31,16 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     });
 
   const handleUpdate = () => {
-    updateItem({ ingredientId, done: !done });
+    updateItem({ id, done: !done });
   };
 
   const handleDelete = () => {
-    deleteItem({ ingredientId });
-  };
+    if (!id) {
+      return;
+    }
 
-  const showQuantity = useAmount;
+    deleteItem({ id });
+  };
 
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3">
@@ -69,14 +71,6 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
           >
             {name}
           </span>
-          {showQuantity && (
-            <Badge
-              variant="secondary"
-              className={cn("transition-opacity", done ? "opacity-30" : "")}
-            >
-              {amountNeeded}
-            </Badge>
-          )}
         </span>
       </div>
 
