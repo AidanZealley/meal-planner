@@ -8,11 +8,11 @@ export const ShoppingList = () => {
 
   return (
     <div className="grid gap-6">
-      <h3 className="text-lg font-medium">Ingredients</h3>
+      <h3 className="text-lg font-medium">Items</h3>
 
       <div className="grid gap-3">
-        {shoppingList.map((item) => (
-          <ShoppingListItem key={item.id} item={item} />
+        {shoppingList.map((item, index) => (
+          <ShoppingListItem key={`${item.itemId}_${index}`} item={item} />
         ))}
       </div>
     </div>

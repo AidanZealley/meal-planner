@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react";
+import { CookingPot, Trash2 } from "lucide-react";
 import { api } from "@/trpc/react";
 import { type PlannedMealsListItemProps } from "./PlannedMealsListItem.types";
 import Link from "next/link";
@@ -35,8 +35,31 @@ export const PlannedMealsListItem = ({
     },
   });
 
+  const { mutate: cook, isPending: isCookPending } =
+    api.plannedMeals.cook.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.plannedMeals.getAllByStatus.invalidate({
+            status: "planned",
+          }),
+          utils.plannedMeals.getAllByStatus.invalidate({
+            status: "cooked",
+          }),
+          utils.meals.getAll.invalidate(),
+          utils.shoppingList.getAll.invalidate(),
+          utils.items.getAll.invalidate(),
+        ]);
+      },
+    });
+
   const handleDelete = () => {
     mutate({ mealId });
+  };
+
+  const handleCook = () => {
+    cook({
+      id,
+    });
   };
 
   return (
@@ -48,27 +71,36 @@ export const PlannedMealsListItem = ({
     >
       {name}
       <Link href={`/meals/${mealId}`} className="absolute inset-0" />
-      <div
-        className={cn(
-          "flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
-          statusPickerOpen ? "opacity-100" : "",
-        )}
-      >
-        <PlannedMealStatusPicker
-          id={id}
-          mealId={mealId}
-          status={status}
-          open={statusPickerOpen}
-          onOpenChange={setStatusPickerOpen}
-        />
-        <LoadingButton
-          isLoading={isPending}
-          size="icon-sm"
-          variant="destructive"
-          onClick={handleDelete}
+      <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            "flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100",
+            statusPickerOpen ? "opacity-100" : "",
+          )}
         >
-          <Trash2 />
-        </LoadingButton>
+          <LoadingButton
+            isLoading={isCookPending}
+            size="icon-sm"
+            onClick={handleCook}
+          >
+            <CookingPot className="h-4 w-4" />
+          </LoadingButton>
+          <PlannedMealStatusPicker
+            id={id}
+            mealId={mealId}
+            status={status}
+            open={statusPickerOpen}
+            onOpenChange={setStatusPickerOpen}
+          />
+          <LoadingButton
+            isLoading={isPending}
+            size="icon-sm"
+            variant="destructive"
+            onClick={handleDelete}
+          >
+            <Trash2 />
+          </LoadingButton>
+        </div>
       </div>
     </div>
   );

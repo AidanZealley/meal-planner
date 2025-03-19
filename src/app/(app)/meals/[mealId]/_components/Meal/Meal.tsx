@@ -1,9 +1,9 @@
 "use client";
 
 import { api } from "@/trpc/react";
-import { IngredientsPicker } from "./components/IngredientsPicker";
-import { MealIngredients } from "./components/MealIngredients";
-import { NewIngredient } from "@/app/(app)/ingredients/_components/NewIngredient";
+import { ItemsPicker } from "./components/ItemsPicker";
+import { MealItems } from "./components/MealItems";
+import { NewItem } from "@/app/(app)/items/_components/NewItem";
 import { Separator } from "@/components/ui/separator";
 import { MealHeader } from "./components/MealHeader";
 import { type MealProps } from "./Meal.types";
@@ -14,11 +14,10 @@ export const Meal = ({ id }: MealProps) => {
     id,
   });
 
-  const mealIngredientIds = meal?.mealIngredients.map(
-    (mealIngredient) => mealIngredient.ingredientId,
-  );
-  const outOfStockCount = meal?.mealIngredients.filter(
-    (mealIngredient) => !mealIngredient.ingredient.inStock,
+  const mealItemIds = meal?.mealItems.map((mealItem) => mealItem.itemId);
+  const outOfStockCount = meal?.mealItems.filter(
+    (mealItem) =>
+      mealItem.item.type === "boolean" && !mealItem.item.amountAvailable,
   ).length;
 
   return (
@@ -27,24 +26,21 @@ export const Meal = ({ id }: MealProps) => {
 
       <div className="grid gap-3">
         <h3 className="flex items-center gap-3 text-lg font-medium">
-          Meal Ingredients
+          Meal Items
           {outOfStockCount !== 0 && (
             <Badge variant="destructive">{outOfStockCount} out of stock</Badge>
           )}
         </h3>
-        <MealIngredients mealIngredients={meal?.mealIngredients} />
+        <MealItems mealItems={meal?.mealItems} />
       </div>
       <div className="grid gap-6">
         <Separator />
 
         <div className="grid gap-3">
-          <h3 className="text-lg font-medium">Unused Ingredients</h3>
+          <h3 className="text-lg font-medium">Unused Items</h3>
           <div className="grid gap-6">
-            <NewIngredient />
-            <IngredientsPicker
-              mealId={id}
-              mealIngredientIds={mealIngredientIds}
-            />
+            <NewItem />
+            <ItemsPicker mealId={id} mealItemIds={mealItemIds} />
           </div>
         </div>
       </div>

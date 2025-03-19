@@ -12,11 +12,11 @@ export default async function Home({ params }: MealPageProps) {
     id: mealId,
   });
 
-  void api.mealIngredients.getAll.prefetch({
+  void api.mealItems.getAll.prefetch({
     mealId,
   });
 
-  void api.ingredients.getAll.prefetch();
+  void api.items.getAll.prefetch();
 
   return (
     <HydrateClient>

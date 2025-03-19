@@ -1,7 +1,7 @@
 "use client";
 
 import { SidebarMenu } from "@/components/ui/sidebar";
-import { Carrot, ShoppingBasket, Utensils } from "lucide-react";
+import { Carrot, Utensils } from "lucide-react";
 import { SidebarNavItem } from "../SidebarNavItem";
 import { usePathname } from "next/navigation";
 
@@ -12,14 +12,9 @@ const items = [
     icon: Utensils,
   },
   {
-    title: "Ingredients",
-    url: "/ingredients",
+    title: "Items",
+    url: "/items",
     icon: Carrot,
-  },
-  {
-    title: "Additional Items",
-    url: "/additional-items",
-    icon: ShoppingBasket,
   },
 ];
 

@@ -21,10 +21,10 @@ export default async function AppLayout({ children }: AppLayoutProps) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="peer w-full">
+      <div className="peer grid min-h-0 w-full grid-rows-[auto_1fr] content-start">
         <AppHeader />
 
-        {children}
+        <div className="grid min-h-0 content-start">{children}</div>
       </div>
     </SidebarProvider>
   );

@@ -7,10 +7,11 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { TRPCReactProvider } from "@/trpc/react";
 import { ThemeProvider } from "./_components/ThemeProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Meal Planner",
-  description: "Plan meals and track what ingredients you've got",
+  description: "Plan meals and track what items you've got",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
@@ -32,6 +33,7 @@ export default function RootLayout({
         >
           <TRPCReactProvider>
             {children}
+            <Toaster />
             {process.env.NODE_ENV === "production" && (
               <>
                 <Analytics />

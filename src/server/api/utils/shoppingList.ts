@@ -1,94 +1,300 @@
-import { and, eq, or, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 import { type Transaction } from "@/lib/types";
 import {
-  ingredients,
-  mealIngredients,
+  items,
+  mealItems,
   plannedMeals,
   shoppingList,
 } from "@/server/db/schema";
 import { type Session } from "better-auth";
-import { ShoppingListTypeEnum } from "@/lib/enums";
 
 export const generateShoppingList = async (
   tx: Transaction,
   session: Session,
 ) => {
-  // Fetch previous shopping list for the user
-  const previousShoppingList = await tx
-    .select()
-    .from(shoppingList)
-    .where(eq(shoppingList.userId, session.userId));
+  try {
+    await tx
+      .delete(shoppingList)
+      .where(
+        and(
+          eq(shoppingList.userId, session.userId),
+          eq(shoppingList.done, true),
+        ),
+      )
+      .returning();
 
-  // Find all out-of-stock ingredients across planned meals
-  const outOfStockIngredients = await tx
-    .select({
-      ingredientId: ingredients.id,
-      inStock: ingredients.inStock,
-      useAmount: ingredients.useAmount,
-      amountNeeded: sql<number>`
-        NULLIF(GREATEST(SUM(${mealIngredients.amountRequired}) - COALESCE(${ingredients.amountAvailable}, 0), 0), 0)
+    // // Fetch previous shopping list for the user
+    // const previousPlannedItems = await tx
+    //   .select()
+    //   .from(shoppingList)
+    //   .where(
+    //     and(
+    //       eq(shoppingList.planned, true),
+    //       eq(shoppingList.userId, session.userId),
+    //     ),
+    //   );
+
+    // Find all out-of-stock items across planned meals
+    const outOfStockPlannedItems = await tx
+      .select({
+        itemId: items.id,
+        type: items.type,
+        amountNeeded: sql<number>`
+        GREATEST(SUM(${mealItems.amountRequired}) - ${items.amountAvailable}, 0)
       `.as("amount_needed"),
-    })
-    .from(mealIngredients)
-    .innerJoin(ingredients, eq(mealIngredients.ingredientId, ingredients.id))
-    .innerJoin(plannedMeals, eq(mealIngredients.mealId, plannedMeals.mealId)) // Ensure all planned meals are considered
-    .where(
-      and(
-        eq(plannedMeals.status, "planned"), // Include all planned meals
-        eq(mealIngredients.userId, session.userId), // Filter by user
-      ),
-    )
-    .groupBy(ingredients.id, ingredients.amountAvailable)
-    .having(
-      or(
-        sql`SUM(${mealIngredients.amountRequired}) > COALESCE(${ingredients.amountAvailable}, 0)`, // Amount-tracked ingredients (shortage)
-        and(eq(ingredients.useAmount, false), eq(ingredients.inStock, false)), // Boolean-tracked ingredients (out of stock)
-      ),
+      })
+      .from(mealItems)
+      .innerJoin(items, eq(mealItems.itemId, items.id))
+      .innerJoin(plannedMeals, eq(mealItems.mealId, plannedMeals.mealId))
+      .where(
+        and(
+          eq(plannedMeals.status, "planned"),
+          eq(mealItems.userId, session.userId),
+        ),
+      )
+      .groupBy(items.id, items.amountAvailable)
+      .having(sql`SUM(${mealItems.amountRequired}) > ${items.amountAvailable}`);
+
+    // TODO - Work out if list is the same and return early
+
+    const itemsToInsert = outOfStockPlannedItems.reduce(
+      (items, { itemId, type, amountNeeded }) => [
+        ...items,
+        ...(type === "boolean"
+          ? [
+              {
+                itemId,
+                planned: true,
+                done: false,
+                userId: session.userId,
+              },
+            ]
+          : Array(Number(amountNeeded))
+              .fill(null)
+              .map(() => ({
+                itemId,
+                planned: true,
+                done: false,
+                userId: session.userId,
+              }))),
+      ],
+      [] as {
+        itemId: string;
+        planned: boolean;
+        done: boolean;
+        userId: string;
+      }[],
     );
 
-  // Create sets for quick comparison
-  const newShoppingListMap = new Map(
-    outOfStockIngredients.map(({ ingredientId, amountNeeded }) => [
-      ingredientId,
-      amountNeeded,
-    ]),
-  );
+    if (!itemsToInsert.length) {
+      return;
+    }
 
-  const oldShoppingListMap = new Map(
-    previousShoppingList.map(({ ingredientId, amountNeeded }) => [
-      ingredientId,
-      amountNeeded,
-    ]),
-  );
+    // Delete old planned items
+    await tx
+      .delete(shoppingList)
+      .where(
+        and(
+          eq(shoppingList.planned, true),
+          eq(shoppingList.userId, session.userId),
+        ),
+      );
 
-  // If the ingredient IDs AND amounts are the same, return early
-  const isSameList =
-    newShoppingListMap.size === oldShoppingListMap.size &&
-    [...newShoppingListMap].every(
-      ([id, amount]) => oldShoppingListMap.get(id) === amount,
-    );
+    await tx.insert(shoppingList).values(itemsToInsert);
+  } catch (error) {
+    console.log("Error in delete:", error);
+  }
+};
 
-  if (isSameList) {
+export const replenishStock = async ({
+  tx,
+  session,
+  itemIds,
+}: {
+  tx: Transaction;
+  session: Session;
+  itemIds: string[];
+}) => {
+  if (!itemIds.length) {
     return;
   }
 
-  // Delete only the current user's shopping list
-  await tx.delete(shoppingList).where(eq(shoppingList.userId, session.userId));
-
-  // Insert new shopping list items while preserving "done" state
-  if (outOfStockIngredients.length) {
-    await tx.insert(shoppingList).values(
-      outOfStockIngredients.map(({ ingredientId, amountNeeded }) => ({
-        ingredientId,
-        type: ShoppingListTypeEnum.Ingredient,
-        amountNeeded, // Null for ingredients with useAmount: false
-        done:
-          previousShoppingList.find(
-            (item) => item.ingredientId === ingredientId,
-          )?.done ?? false,
-        userId: session.userId,
-      })),
+  // Find shopping list rows for the given itemIds that aren't marked as done
+  const plannedShoppingItems = await tx
+    .select({
+      id: shoppingList.id,
+      itemId: shoppingList.itemId,
+      done: shoppingList.done,
+      type: items.type,
+      amountAvailable: items.amountAvailable,
+    })
+    .from(shoppingList)
+    .innerJoin(items, eq(shoppingList.itemId, items.id))
+    .where(
+      and(
+        eq(shoppingList.userId, session.userId),
+        eq(shoppingList.planned, true),
+        inArray(shoppingList.itemId, itemIds),
+      ),
     );
+
+  if (!plannedShoppingItems.length) {
+    return;
   }
+
+  const groupedPlannedShoppingItems = plannedShoppingItems.reduce(
+    (groupedItems, { itemId, done, type, amountAvailable }) => ({
+      ...groupedItems,
+      [itemId]: groupedItems[itemId]
+        ? {
+            ...groupedItems[itemId],
+            amountNeeded: done
+              ? groupedItems[itemId].amountNeeded
+              : groupedItems[itemId].amountNeeded + 1,
+          }
+        : {
+            itemId,
+            type,
+            amountAvailable,
+            amountNeeded: done ? 0 : 1,
+          },
+    }),
+    {} as Record<
+      string,
+      {
+        itemId: string;
+        type: "boolean" | "amount";
+        amountAvailable: number;
+        amountNeeded: number;
+      }
+    >,
+  );
+
+  if (!Object.keys(groupedPlannedShoppingItems).length) {
+    return;
+  }
+
+  // Replenish items stock
+  const itemUpdatesPromises = Object.values(groupedPlannedShoppingItems).map(
+    ({ itemId, type, amountAvailable, amountNeeded }) =>
+      tx
+        .update(items)
+        .set({
+          amountAvailable:
+            type === "amount"
+              ? Number(amountAvailable) + Number(amountNeeded)
+              : 1,
+        })
+        .where(eq(items.id, itemId)),
+  );
+
+  await Promise.all(itemUpdatesPromises);
+
+  // Remove items from the shopping list after replenishing stock
+  const shoppingItemIds = plannedShoppingItems.map((item) => item.id);
+
+  await tx
+    .delete(shoppingList)
+    .where(
+      and(
+        eq(shoppingList.userId, session.userId),
+        inArray(shoppingList.id, shoppingItemIds),
+      ),
+    );
+};
+
+export const toggleItemsDone = async ({
+  tx,
+  session,
+  itemIds,
+  done,
+}: {
+  tx: Transaction;
+  session: Session;
+  itemIds: string[];
+  done: boolean;
+}) => {
+  if (!itemIds.length) return;
+
+  const shoppingItems = await tx
+    .select({
+      id: shoppingList.id,
+      itemId: shoppingList.itemId,
+      type: items.type,
+      amountAvailable: items.amountAvailable,
+    })
+    .from(shoppingList)
+    .innerJoin(items, eq(shoppingList.itemId, items.id))
+    .where(
+      and(
+        eq(shoppingList.userId, session.userId),
+        eq(shoppingList.done, false),
+        inArray(shoppingList.itemId, itemIds),
+      ),
+    );
+
+  const groupedPlannedShoppingItems = shoppingItems.reduce(
+    (groupedItems, { itemId, type, amountAvailable }) => ({
+      ...groupedItems,
+      [itemId]: groupedItems[itemId]
+        ? {
+            ...groupedItems[itemId],
+            amountNeeded: groupedItems[itemId].amountNeeded + 1,
+          }
+        : {
+            itemId,
+            type,
+            amountAvailable,
+            amountNeeded: 1,
+          },
+    }),
+    {} as Record<
+      string,
+      {
+        itemId: string;
+        type: "boolean" | "amount";
+        amountAvailable: number;
+        amountNeeded: number;
+      }
+    >,
+  );
+
+  // Replenish items stock
+  const itemUpdatesPromises = Object.values(groupedPlannedShoppingItems).map(
+    ({ itemId, type, amountAvailable, amountNeeded }) =>
+      tx
+        .update(items)
+        .set({
+          amountAvailable:
+            type === "amount"
+              ? Number(amountAvailable) + Number(amountNeeded)
+              : 1,
+        })
+        .where(eq(items.id, itemId)),
+  );
+
+  await Promise.all(itemUpdatesPromises);
+
+  // Mark shopping list items as done
+  await tx
+    .update(shoppingList)
+    .set({ done })
+    .where(
+      and(
+        eq(shoppingList.userId, session.userId),
+        inArray(shoppingList.itemId, itemIds),
+      ),
+    );
+};
+
+export const clearShoppingList = async (tx: Transaction, session: Session) => {
+  const clearedItems = await tx
+    .delete(shoppingList)
+    .where(
+      and(eq(shoppingList.userId, session.userId), eq(shoppingList.done, true)),
+    )
+    .returning();
+
+  return clearedItems;
 };

@@ -28,7 +28,7 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/ingredients">Meals</BreadcrumbLink>
+              <BreadcrumbLink href="/items">Meals</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
           </BreadcrumbList>
@@ -50,9 +50,9 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
         <Card>
           <CardContent className="flex flex-col items-center gap-3 pt-6">
             <span className="text-4xl font-extralight">
-              {meal?.mealIngredients.length}
+              {meal?.mealItems.length}
             </span>
-            <span className="text-muted-foreground">Ingredients</span>
+            <span className="text-muted-foreground">Items</span>
           </CardContent>
         </Card>
 

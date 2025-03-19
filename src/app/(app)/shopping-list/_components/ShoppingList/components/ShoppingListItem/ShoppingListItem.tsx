@@ -1,48 +1,88 @@
 import { type ShoppingListItemProps } from "./ShoppingListItem.types";
 import { api } from "@/trpc/react";
-import { Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LoadingButton } from "@/components/LoadingButton";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
 export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const {
-    id,
     amountNeeded,
+    amountUnplanned,
     done,
-    ingredient: { name, useAmount },
+    item: { id: itemId, name, type },
   } = item;
   const utils = api.useUtils();
 
-  const { mutate: updateItem, isPending: isUpdatePending } =
-    api.shoppingList.update.useMutation({
+  const { mutate: increaseQuantity, isPending: isIncreasePending } =
+    api.shoppingList.increaseQuantity.useMutation({
       onSuccess: async () => {
-        await utils.shoppingList.getAll.invalidate();
+        await Promise.all([
+          utils.shoppingList.getAll.invalidate(),
+          utils.items.getAll.invalidate(),
+        ]);
+      },
+      onError: (error) => {
+        toast("Failed to increase amount", {
+          description: error.message,
+        });
+      },
+    });
+  const { mutate: decreaseQuantity, isPending: isDecreasePending } =
+    api.shoppingList.decreaseQuantity.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.shoppingList.getAll.invalidate(),
+          utils.items.getAll.invalidate(),
+        ]);
+      },
+      onError: (error) => {
+        toast("Failed to decrease amount", {
+          description: error.message,
+        });
+      },
+    });
+  const { mutate: updateItem, isPending: isUpdatePending } =
+    api.shoppingList.toggleDone.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.shoppingList.getAll.invalidate(),
+          utils.items.getAll.invalidate(),
+        ]);
       },
     });
 
   const { mutate: deleteItem, isPending: isDeletePending } =
     api.shoppingList.delete.useMutation({
       onSuccess: async () => {
-        await utils.shoppingList.getAll.invalidate();
+        await Promise.all([utils.shoppingList.getAll.invalidate()]);
       },
     });
 
   const handleUpdate = () => {
-    if (!id) {
+    if (!itemId) {
       return;
     }
 
-    updateItem({ id, done: !done });
+    updateItem({ itemId, done: !done });
+  };
+
+  const handleIncrease = () => {
+    increaseQuantity({ itemId });
+  };
+
+  const handleDecrease = () => {
+    decreaseQuantity({ itemId });
   };
 
   const handleDelete = () => {
-    deleteItem({ id });
+    deleteItem({ itemId });
   };
 
-  const showQuantity = useAmount;
+  const showQuantity = type === "amount";
 
   return (
     <div className="grid grid-cols-[1fr_auto] items-center gap-3">
@@ -84,14 +124,35 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
         </span>
       </div>
 
-      <LoadingButton
-        isLoading={isDeletePending}
-        size="icon-sm"
-        variant="destructive"
-        onClick={handleDelete}
-      >
-        <Trash2 />
-      </LoadingButton>
+      {showQuantity && (
+        <div className="flex items-center gap-1">
+          <LoadingButton
+            isLoading={isDecreasePending}
+            size="icon-sm"
+            variant="ghost"
+            onClick={handleDecrease}
+            disabled={amountUnplanned === 0}
+          >
+            <Minus />
+          </LoadingButton>
+          <LoadingButton
+            isLoading={isIncreasePending}
+            size="icon-sm"
+            variant="ghost"
+            onClick={handleIncrease}
+          >
+            <Plus />
+          </LoadingButton>
+          <LoadingButton
+            isLoading={isDeletePending}
+            size="icon-sm"
+            variant="destructive"
+            onClick={handleDelete}
+          >
+            <Trash2 />
+          </LoadingButton>
+        </div>
+      )}
     </div>
   );
 };
