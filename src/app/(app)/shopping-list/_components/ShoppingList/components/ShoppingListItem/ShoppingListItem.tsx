@@ -19,8 +19,8 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
 
   const { mutate: increaseQuantity, isPending: isIncreasePending } =
     api.shoppingList.increaseQuantity.useMutation({
-      onSuccess: () => {
-        Promise.all([
+      onSuccess: async () => {
+        await Promise.all([
           utils.shoppingList.getAll.invalidate(),
           utils.items.getAll.invalidate(),
         ]);
@@ -33,8 +33,8 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     });
   const { mutate: decreaseQuantity, isPending: isDecreasePending } =
     api.shoppingList.decreaseQuantity.useMutation({
-      onSuccess: () => {
-        Promise.all([
+      onSuccess: async () => {
+        await Promise.all([
           utils.shoppingList.getAll.invalidate(),
           utils.items.getAll.invalidate(),
         ]);
@@ -47,8 +47,8 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     });
   const { mutate: updateItem, isPending: isUpdatePending } =
     api.shoppingList.toggleDone.useMutation({
-      onSuccess: () => {
-        Promise.all([
+      onSuccess: async () => {
+        await Promise.all([
           utils.shoppingList.getAll.invalidate(),
           utils.items.getAll.invalidate(),
         ]);
@@ -57,8 +57,8 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
 
   const { mutate: deleteItem, isPending: isDeletePending } =
     api.shoppingList.delete.useMutation({
-      onSuccess: () => {
-        Promise.all([utils.shoppingList.getAll.invalidate()]);
+      onSuccess: async () => {
+        await Promise.all([utils.shoppingList.getAll.invalidate()]);
       },
     });
 

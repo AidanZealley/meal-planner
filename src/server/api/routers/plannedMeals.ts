@@ -1,20 +1,10 @@
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import {
-  items,
-  mealItems,
-  meals,
-  plannedMeals,
-  shoppingList,
-} from "@/server/db/schema";
+import { mealItems, meals, plannedMeals } from "@/server/db/schema";
 import { PlannedMealStatusValues } from "@/lib/enums";
-import {
-  generateShoppingList,
-  replenishStock,
-  toggleItemsDone,
-} from "../utils/shoppingList";
+import { generateShoppingList, replenishStock } from "../utils/shoppingList";
 
 export const plannedMealsRouter = createTRPCRouter({
   create: protectedProcedure

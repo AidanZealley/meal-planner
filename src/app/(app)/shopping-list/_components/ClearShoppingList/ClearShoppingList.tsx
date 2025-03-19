@@ -2,7 +2,7 @@
 
 import { LoadingButton } from "@/components/LoadingButton";
 import { api } from "@/trpc/react";
-import { ListChecks, RefreshCw } from "lucide-react";
+import { ListChecks } from "lucide-react";
 
 export const ClearShoppingList = () => {
   const utils = api.useUtils();
