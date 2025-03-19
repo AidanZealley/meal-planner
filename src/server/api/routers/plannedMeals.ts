@@ -1,10 +1,20 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { plannedMeals } from "@/server/db/schema";
+import {
+  items,
+  mealItems,
+  meals,
+  plannedMeals,
+  shoppingList,
+} from "@/server/db/schema";
 import { PlannedMealStatusValues } from "@/lib/enums";
-import { generateShoppingList } from "../utils/shoppingList";
+import {
+  generateShoppingList,
+  replenishStock,
+  toggleItemsDone,
+} from "../utils/shoppingList";
 
 export const plannedMealsRouter = createTRPCRouter({
   create: protectedProcedure
@@ -57,7 +67,7 @@ export const plannedMealsRouter = createTRPCRouter({
       with: {
         meal: {
           with: {
-            mealIngredients: {
+            mealItems: {
               where: (plannedMeals) =>
                 eq(plannedMeals.userId, ctx.session.user.id),
             },
@@ -82,7 +92,7 @@ export const plannedMealsRouter = createTRPCRouter({
         with: {
           meal: {
             with: {
-              mealIngredients: true,
+              mealItems: true,
             },
           },
         },
@@ -104,9 +114,9 @@ export const plannedMealsRouter = createTRPCRouter({
         with: {
           meal: {
             with: {
-              mealIngredients: {
+              mealItems: {
                 with: {
-                  ingredient: true,
+                  item: true,
                 },
               },
             },
@@ -120,5 +130,38 @@ export const plannedMealsRouter = createTRPCRouter({
       });
 
       return meal;
+    }),
+
+  cook: protectedProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        // Get the itemIds in the plannedMeal
+        const itemIds = await tx
+          .select({ itemId: mealItems.itemId })
+          .from(plannedMeals)
+          .innerJoin(meals, eq(plannedMeals.mealId, meals.id))
+          .innerJoin(mealItems, eq(meals.id, mealItems.mealId))
+          .where(eq(plannedMeals.id, input.id));
+
+        // Ensure any remaining matching items in the shopping list are marked as done
+        await replenishStock({
+          tx,
+          session: ctx.session.session,
+          itemIds: itemIds.map((itemId) => itemId.itemId),
+        });
+
+        // Set the plannedMeal status to "cooked"
+        await tx
+          .update(plannedMeals)
+          .set({
+            status: "cooked",
+          })
+          .where(eq(plannedMeals.id, input.id));
+      });
     }),
 });

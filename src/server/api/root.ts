@@ -1,18 +1,16 @@
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
-import { ingredientsRouter } from "./routers/ingredients";
+import { itemsRouter } from "./routers/items";
 import { mealsRouter } from "./routers/meals";
-import { mealIngredientsRouter } from "./routers/mealIngredients";
+import { mealItemsRouter } from "./routers/mealItems";
 import { plannedMealsRouter } from "./routers/plannedMeals";
 import { shoppingListRouter } from "./routers/shoppingList";
 import { usersRouter } from "./routers/users";
-import { additionalItemsRouter } from "./routers/additionalItems";
 
 export const appRouter = createTRPCRouter({
-  ingredients: ingredientsRouter,
+  items: itemsRouter,
   meals: mealsRouter,
-  mealIngredients: mealIngredientsRouter,
+  mealItems: mealItemsRouter,
   plannedMeals: plannedMealsRouter,
-  additionalItems: additionalItemsRouter,
   shoppingList: shoppingListRouter,
   users: usersRouter,
 });

@@ -1,12 +1,12 @@
 export const PlannedMealStatusValues = ["planned", "cooked"] as const;
 export type PlannedMealStatus = (typeof PlannedMealStatusValues)[number];
 
-export const ShoppingListTypeValues = ["ingredient", "additional"] as const;
-export type ShoppingListType = (typeof ShoppingListTypeValues)[number];
+export const ItemTypeValues = ["boolean", "amount"] as const;
+export type ItemType = (typeof ItemTypeValues)[number];
 
-export const ShoppingListTypeEnum = Object.fromEntries(
-  ShoppingListTypeValues.map((value) => [
+export const ItemTypeEnum = Object.fromEntries(
+  ItemTypeValues.map((value) => [
     value.charAt(0).toUpperCase() + value.slice(1),
     value,
   ]),
-) as Record<Capitalize<ShoppingListType>, ShoppingListType>;
+) as Record<Capitalize<ItemType>, ItemType>;

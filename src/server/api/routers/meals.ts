@@ -59,9 +59,9 @@ export const mealsRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const meal = await ctx.db.query.meals.findFirst({
         with: {
-          mealIngredients: {
+          mealItems: {
             with: {
-              ingredient: true,
+              item: true,
             },
           },
           plannedMeals: true,

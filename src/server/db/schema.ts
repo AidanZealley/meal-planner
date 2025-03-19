@@ -1,5 +1,5 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
-import { PlannedMealStatusValues, ShoppingListTypeValues } from "@/lib/enums";
+import { PlannedMealStatusValues, ItemTypeValues } from "@/lib/enums";
 import { relations, sql } from "drizzle-orm";
 import {
   boolean,
@@ -39,7 +39,7 @@ export const meals = createTable(
 );
 
 export const mealsRelations = relations(meals, ({ one, many }) => ({
-  mealIngredients: many(mealIngredients),
+  mealItems: many(mealItems),
   plannedMeals: many(plannedMeals),
   user: one(user, {
     fields: [meals.userId],
@@ -47,15 +47,19 @@ export const mealsRelations = relations(meals, ({ one, many }) => ({
   }),
 }));
 
-export const ingredients = createTable(
-  "ingredients",
+export const items = createTable(
+  "items",
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
     name: varchar("name", { length: 256 }).notNull(),
     deleted: boolean("deleted").default(false).notNull(),
-    inStock: boolean("in_stock").default(true).notNull(),
     amountAvailable: integer("amount_available").default(1).notNull(),
-    useAmount: boolean("use_amount").default(false).notNull(),
+    type: varchar("type", {
+      length: 32,
+      enum: ItemTypeValues,
+    })
+      .default("boolean")
+      .notNull(),
     unit: varchar("unit", { length: 16 }),
     userId: text("user_id")
       .notNull()
@@ -67,33 +71,33 @@ export const ingredients = createTable(
       () => new Date(),
     ),
   },
-  (ingredient) => ({
-    nameIndex: index("ingredient_name_idx").on(ingredient.name),
-    nameUnique: unique("ingredient_name_unique").on(ingredient.id),
-    userIndex: index("ingredient_user_idx").on(ingredient.userId),
+  (item) => ({
+    nameIndex: index("item_name_idx").on(item.name),
+    nameUnique: unique("item_name_unique").on(item.id),
+    userIndex: index("item_user_idx").on(item.userId),
   }),
 );
 
-export const ingredientsRelations = relations(ingredients, ({ one, many }) => ({
-  mealIngredients: many(mealIngredients),
+export const itemsRelations = relations(items, ({ one, many }) => ({
+  mealItems: many(mealItems),
   shoppingListEntries: many(shoppingList),
   user: one(user, {
-    fields: [ingredients.userId],
+    fields: [items.userId],
     references: [user.id],
   }),
 }));
 
-export const mealIngredients = createTable(
-  "meal_ingredients",
+export const mealItems = createTable(
+  "meal_items",
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
-    amountRequired: integer("amount_required").default(1),
+    amountRequired: integer("amount_required").default(1).notNull(),
     mealId: uuid("meal_id")
       .notNull()
       .references(() => meals.id, { onDelete: "cascade" }),
-    ingredientId: uuid("ingredient_id")
+    itemId: uuid("item_id")
       .notNull()
-      .references(() => ingredients.id, { onDelete: "cascade" }),
+      .references(() => items.id, { onDelete: "cascade" }),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -101,32 +105,27 @@ export const mealIngredients = createTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
   },
-  (mealIngredient) => ({
-    mealIndex: index("meal_ingredients_meal_idx").on(mealIngredient.mealId),
-    ingredientIndex: index("meal_ingredients_ingredient_idx").on(
-      mealIngredient.ingredientId,
-    ),
-    userIndex: index("meal_ingredients_user_idx").on(mealIngredient.userId),
+  (mealItem) => ({
+    mealIndex: index("meal_items_meal_idx").on(mealItem.mealId),
+    itemIndex: index("meal_items_item_idx").on(mealItem.itemId),
+    userIndex: index("meal_items_user_idx").on(mealItem.userId),
   }),
 );
 
-export const mealIngredientsRelations = relations(
-  mealIngredients,
-  ({ one }) => ({
-    meal: one(meals, {
-      fields: [mealIngredients.mealId],
-      references: [meals.id],
-    }),
-    ingredient: one(ingredients, {
-      fields: [mealIngredients.ingredientId],
-      references: [ingredients.id],
-    }),
-    user: one(user, {
-      fields: [mealIngredients.userId],
-      references: [user.id],
-    }),
+export const mealItemsRelations = relations(mealItems, ({ one }) => ({
+  meal: one(meals, {
+    fields: [mealItems.mealId],
+    references: [meals.id],
   }),
-);
+  item: one(items, {
+    fields: [mealItems.itemId],
+    references: [items.id],
+  }),
+  user: one(user, {
+    fields: [mealItems.userId],
+    references: [user.id],
+  }),
+}));
 
 export const plannedMeals = createTable(
   "planned_meals",
@@ -170,12 +169,17 @@ export const plannedMealsRelations = relations(plannedMeals, ({ one }) => ({
   }),
 }));
 
-export const additionalItems = createTable(
-  "additionalItems",
+export const shoppingList = createTable(
+  "shopping_list",
   {
     id: uuid("id").defaultRandom().primaryKey().notNull(),
-    name: varchar("name", { length: 256 }).notNull(),
-    deleted: boolean("deleted").default(false).notNull(),
+    itemId: uuid("item_id")
+      .references(() => items.id, {
+        onDelete: "cascade",
+      })
+      .notNull(),
+    planned: boolean("planned").default(false).notNull(),
+    done: boolean("done").default(false).notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
@@ -186,72 +190,16 @@ export const additionalItems = createTable(
       () => new Date(),
     ),
   },
-  (meal) => ({
-    nameIndex: index("additional_items_name_idx").on(meal.name),
-    userIndex: index("additional_items_user_idx").on(meal.userId),
-  }),
-);
-
-export const additionalItemsRelations = relations(
-  additionalItems,
-  ({ one, many }) => ({
-    shoppingListEntries: many(shoppingList),
-    user: one(user, {
-      fields: [additionalItems.userId],
-      references: [user.id],
-    }),
-  }),
-);
-
-export const shoppingList = createTable(
-  "shopping_list",
-  {
-    id: uuid("id").defaultRandom().primaryKey().notNull(),
-    ingredientId: uuid("ingredient_id").references(() => ingredients.id, {
-      onDelete: "cascade",
-    }),
-    additionalItemId: uuid("additional_item_id").references(
-      () => additionalItems.id,
-      { onDelete: "cascade" },
-    ),
-    type: varchar("type", {
-      length: 32,
-      enum: ShoppingListTypeValues,
-    }).default("ingredient"),
-    amountNeeded: integer("amount_needed"),
-    done: boolean("done").default(false).notNull(),
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-  },
   (shoppingList) => ({
-    ingredientIndex: index("shopping_list_ingredient_idx").on(
-      shoppingList.ingredientId,
-    ),
-    ingredientUnique: unique("shopping_list_ingredient_unique").on(
-      shoppingList.ingredientId,
-    ),
-    additionalItemIndex: index("shopping_list_additional_item_idx").on(
-      shoppingList.additionalItemId,
-    ),
-    additionalItemUnique: unique("shopping_list_additional_item_unique").on(
-      shoppingList.additionalItemId,
-    ),
+    itemIndex: index("shopping_list_item_idx").on(shoppingList.itemId),
     userIndex: index("shopping_list_user_idx").on(shoppingList.userId),
   }),
 );
 
 export const shoppingListRelations = relations(shoppingList, ({ one }) => ({
-  ingredient: one(ingredients, {
-    fields: [shoppingList.ingredientId],
-    references: [ingredients.id],
-  }),
-  additionalItem: one(additionalItems, {
-    fields: [shoppingList.additionalItemId],
-    references: [additionalItems.id],
+  item: one(items, {
+    fields: [shoppingList.itemId],
+    references: [items.id],
   }),
   user: one(user, {
     fields: [shoppingList.userId],

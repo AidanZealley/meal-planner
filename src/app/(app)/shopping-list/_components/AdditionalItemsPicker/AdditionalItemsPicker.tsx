@@ -11,34 +11,31 @@ import {
 } from "@/components/ui/command";
 
 export const AdditionalItemsPicker = () => {
-  const [additionalItems] = api.additionalItems.getAll.useSuspenseQuery();
+  const [items] = api.items.getAll.useSuspenseQuery();
 
   const utils = api.useUtils();
 
-  const { mutate } = api.shoppingList.addAdditionalItem.useMutation({
+  const { mutate } = api.shoppingList.create.useMutation({
     onSuccess: async () => {
-      await utils.shoppingList.getAllAdditionalItems.invalidate();
+      await utils.shoppingList.getAll.invalidate();
     },
   });
 
-  const handleSelect = (additionalItemId: string) => {
+  const handleSelect = (itemId: string) => {
     mutate({
-      additionalItemId,
+      itemId,
     });
   };
 
   return (
     <Command className="rounded-lg border shadow-md md:min-w-[450px]">
-      <CommandInput placeholder="Search additional items..." />
+      <CommandInput placeholder="Search items..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
-          {additionalItems.map((additionalItem) => (
-            <CommandItem
-              key={additionalItem.id}
-              onSelect={() => handleSelect(additionalItem.id)}
-            >
-              {additionalItem.name}
+          {items.map((item) => (
+            <CommandItem key={item.id} onSelect={() => handleSelect(item.id)}>
+              {item.name}
             </CommandItem>
           ))}
         </CommandGroup>

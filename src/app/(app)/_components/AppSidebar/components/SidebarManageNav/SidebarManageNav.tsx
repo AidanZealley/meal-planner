@@ -12,14 +12,9 @@ const items = [
     icon: Utensils,
   },
   {
-    title: "Ingredients",
-    url: "/ingredients",
+    title: "Items",
+    url: "/items",
     icon: Carrot,
-  },
-  {
-    title: "Additional Items",
-    url: "/additional-items",
-    icon: ShoppingBasket,
   },
 ];
 
