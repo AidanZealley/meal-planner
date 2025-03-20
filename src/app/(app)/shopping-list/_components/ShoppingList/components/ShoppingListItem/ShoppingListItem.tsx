@@ -85,7 +85,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const showQuantity = type === "amount";
 
   return (
-    <div className="grid grid-cols-[1fr_auto] items-center gap-3">
+    <div className="grid grid-cols-[1fr_auto] items-center gap-2">
       <div className="grid grid-cols-[auto_1fr] items-center gap-3">
         <span className="relative grid place-items-center">
           <Checkbox
@@ -107,11 +107,13 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
         <span className="flex items-center gap-3">
           <span
             className={cn(
-              "transition-all",
+              "grid transition-all",
               done ? "line-through opacity-30" : "",
             )}
           >
-            {name}
+            <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+              {name}
+            </span>
           </span>
           {showQuantity && (
             <Badge

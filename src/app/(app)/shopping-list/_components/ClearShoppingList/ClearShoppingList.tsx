@@ -22,6 +22,7 @@ export const ClearShoppingList = () => {
       onClick={handleClearClick}
       isLoading={isPending}
       variant="secondary"
+      size="sm"
     >
       <span className="flex items-center gap-3">
         <ListChecks className="h-4 w-4" />

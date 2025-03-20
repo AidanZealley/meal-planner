@@ -28,7 +28,9 @@ export const Meal = ({ id }: MealProps) => {
         <h3 className="flex items-center gap-3 text-lg font-medium">
           Meal Items
           {outOfStockCount !== 0 && (
-            <Badge variant="destructive">{outOfStockCount} out of stock</Badge>
+            <Badge className="whitespace-nowrap" variant="destructive">
+              {outOfStockCount} out of stock
+            </Badge>
           )}
         </h3>
         <MealItems mealItems={meal?.mealItems} />

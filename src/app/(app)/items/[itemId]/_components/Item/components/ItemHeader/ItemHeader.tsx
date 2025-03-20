@@ -24,7 +24,11 @@ export const ItemHeader = ({ item }: ItemHeaderProps) => {
         </Breadcrumb>
         <h1 className="flex items-center gap-3 text-3xl font-bold">
           {item?.name}
-          {notInStock && <Badge variant="destructive">out of stock</Badge>}
+          {notInStock && (
+            <Badge className="whitespace-nowrap" variant="destructive">
+              out of stock
+            </Badge>
+          )}
         </h1>
       </div>
     </div>
