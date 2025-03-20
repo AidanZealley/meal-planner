@@ -37,7 +37,9 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
           <h1 className="flex items-center gap-3 text-3xl font-bold">
             {meal?.name}
             {currentlyPlanned && (
-              <Badge variant="secondary">{currentlyPlanned.status}</Badge>
+              <Badge className="whitespace-nowrap" variant="secondary">
+                {currentlyPlanned.status}
+              </Badge>
             )}
           </h1>
           <span className="text-xs text-muted-foreground">

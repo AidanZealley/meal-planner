@@ -11,8 +11,8 @@ export default async function ShoppingListPage() {
 
   return (
     <HydrateClient>
-      <main className="grid gap-6 p-6">
-        <div className="flex items-center justify-between gap-3">
+      <main className="grid gap-8 p-6">
+        <div className="grid gap-3 sm:flex sm:items-center sm:justify-between">
           <h1 className="text-3xl font-bold">Shopping List</h1>
 
           <div className="flex items-center gap-2">

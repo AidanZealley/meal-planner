@@ -19,7 +19,11 @@ export const GenerateShoppingList = () => {
   };
 
   return (
-    <LoadingButton onClick={handleRegenerateClick} isLoading={isPending}>
+    <LoadingButton
+      onClick={handleRegenerateClick}
+      isLoading={isPending}
+      size="sm"
+    >
       <span className="flex items-center gap-3">
         <RefreshCw className="h-4 w-4" />
         Regenerate

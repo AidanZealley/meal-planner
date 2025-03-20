@@ -37,16 +37,28 @@ export const ItemsListItem = ({
       {isEditing ? (
         <EditableItem item={item} onUpdate={endEdit} />
       ) : (
-        <span
+        <div
           className={cn(
-            "flex items-center gap-3 transition-opacity",
+            "grid max-w-full grid-cols-[1fr_auto] items-center gap-3 transition-opacity",
             !isEditingId || isEditing ? "opacity-100" : "opacity-30",
           )}
         >
-          {name}
-          {showQuantity && <Badge variant="secondary">{amountAvailable}</Badge>}
-          {!inStock && <Badge variant="destructive">Out of stock</Badge>}
-        </span>
+          <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+            {name}
+          </span>
+          <div className="flex items-center gap-2">
+            {showQuantity && (
+              <Badge className="whitespace-nowrap" variant="secondary">
+                {amountAvailable}
+              </Badge>
+            )}
+            {!inStock && (
+              <Badge className="whitespace-nowrap" variant="destructive">
+                Out of stock
+              </Badge>
+            )}
+          </div>
+        </div>
       )}
       <div
         className={cn(

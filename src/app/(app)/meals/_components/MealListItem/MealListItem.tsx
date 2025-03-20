@@ -45,8 +45,14 @@ export const MealListItem = ({
             !isEditingId || isEditing ? "opacity-100" : "opacity-30",
           )}
         >
-          {name}
-          {activePlan && <Badge variant="secondary">{activePlan.status}</Badge>}
+          <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+            {name}
+          </span>
+          {activePlan && (
+            <Badge className="whitespace-nowrap" variant="secondary">
+              {activePlan.status}
+            </Badge>
+          )}
         </div>
       )}
       <div
