@@ -1,3 +1,6 @@
+import { ArrayElement } from "@/lib/types";
+import { RouterOutputs } from "@/trpc/react";
+
 export type ItemsListItemMenuProps = {
-  id: string;
+  item: ArrayElement<RouterOutputs["items"]["getAll"]>;
 };

@@ -14,7 +14,7 @@ export const ItemsList = () => {
   };
 
   return (
-    <div className="grid gap-1 pl-3 pr-5">
+    <div className="grid gap-2 pl-3 pr-5">
       {items.map((item) => (
         <ItemsListItem
           key={item.id}

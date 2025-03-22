@@ -94,7 +94,7 @@ export const UpdateStockDrawer = ({ item }: UpdateStockDrawerProps) => {
       onOpenChange={setOpen}
       title="Update Stock"
       description="Enable amount to allow setting a required amount in meals which will be reflected in the shopping list for planned meals."
-      customTrigger={<ItemsListItemMenu id={id} />}
+      customTrigger={<ItemsListItemMenu item={item} />}
     >
       <div className="grid gap-3">
         <div className="grid grid-cols-2">

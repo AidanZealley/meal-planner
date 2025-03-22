@@ -121,7 +121,7 @@ export const itemsRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const items = await ctx.db.query.items.findMany({
       where: (items) => eq(items.userId, ctx.session.user.id),
-      orderBy: (items, { desc }) => [desc(items.createdAt)],
+      orderBy: (items, { asc }) => [asc(items.name)],
     });
 
     return items;

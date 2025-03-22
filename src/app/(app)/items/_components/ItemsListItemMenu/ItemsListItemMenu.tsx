@@ -1,4 +1,5 @@
 import { Carrot, MoreVertical, SquareStack, Trash2 } from "lucide-react";
+import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -9,13 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DialogTrigger } from "@radix-ui/react-dialog";
 import { type ItemsListItemMenuProps } from "./ItemsListItemMenu.types";
 import { api } from "@/trpc/react";
 import { Spinner } from "@/components/Spinner";
-import Link from "next/link";
+import { DialogTrigger } from "@/components/ui/dialog";
 
-export const ItemsListItemMenu = ({ id }: ItemsListItemMenuProps) => {
+export const ItemsListItemMenu = ({ item }: ItemsListItemMenuProps) => {
+  const { id, type, amountAvailable } = item;
+
   const utils = api.useUtils();
 
   const { mutate: deleteItem, isPending: isDeletePending } =
