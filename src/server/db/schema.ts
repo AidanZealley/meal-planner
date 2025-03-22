@@ -73,7 +73,7 @@ export const items = createTable(
   },
   (item) => ({
     nameIndex: index("item_name_idx").on(item.name),
-    nameUnique: unique("item_name_unique").on(item.id),
+    nameUnique: unique("item_name_unique").on(item.name),
     userIndex: index("item_user_idx").on(item.userId),
   }),
 );
