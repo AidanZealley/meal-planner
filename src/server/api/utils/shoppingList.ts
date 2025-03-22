@@ -41,8 +41,11 @@ export const generateShoppingList = async (
         itemId: items.id,
         type: items.type,
         amountNeeded: sql<number>`
-        GREATEST(SUM(${mealItems.amountRequired}) - ${items.amountAvailable}, 0)
-      `.as("amount_needed"),
+          CASE 
+            WHEN ${items.type} = 'boolean' THEN 1
+            ELSE GREATEST(SUM(${mealItems.amountRequired}) - ${items.amountAvailable}, 0)
+          END
+        `.as("amount_needed"),
       })
       .from(mealItems)
       .innerJoin(items, eq(mealItems.itemId, items.id))
@@ -53,9 +56,16 @@ export const generateShoppingList = async (
           eq(mealItems.userId, session.userId),
         ),
       )
-      .groupBy(items.id, items.amountAvailable)
-      .having(sql`SUM(${mealItems.amountRequired}) > ${items.amountAvailable}`);
-
+      .groupBy(items.id, items.type, items.amountAvailable)
+      .having(sql`
+        CASE 
+          WHEN ${items.type} = 'boolean' THEN 
+            ${items.amountAvailable} = 0 AND COUNT(*) > 0
+          ELSE 
+            SUM(${mealItems.amountRequired}) > ${items.amountAvailable}
+        END
+      `);
+    console.log(outOfStockPlannedItems);
     // TODO - Work out if list is the same and return early
 
     const itemsToInsert = outOfStockPlannedItems.reduce(

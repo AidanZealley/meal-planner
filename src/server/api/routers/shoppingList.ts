@@ -1,4 +1,4 @@
-import { asc, eq, sql } from "drizzle-orm";
+import { asc, eq, sql, and } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -14,9 +14,26 @@ export const shoppingListRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ itemId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      await ctx.db.insert(shoppingList).values({
-        itemId: input.itemId,
-        userId: ctx.session.user.id,
+      await ctx.db.transaction(async (tx) => {
+        const existingBooleanItem = await tx
+          .select()
+          .from(shoppingList)
+          .innerJoin(items, eq(shoppingList.itemId, items.id))
+          .where(
+            and(
+              eq(shoppingList.itemId, input.itemId),
+              eq(shoppingList.userId, ctx.session.user.id),
+              eq(items.type, "boolean"),
+            ),
+          )
+          .then((result) => result.length > 0);
+
+        if (!existingBooleanItem) {
+          await tx.insert(shoppingList).values({
+            itemId: input.itemId,
+            userId: ctx.session.user.id,
+          });
+        }
       });
     }),
 
