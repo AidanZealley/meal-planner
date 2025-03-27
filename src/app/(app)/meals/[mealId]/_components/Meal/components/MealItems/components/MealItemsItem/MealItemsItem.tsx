@@ -24,9 +24,21 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
     });
 
   const {
-    mutate: updateAmountRequired,
-    isPending: isPendingUpdateAmountRequired,
-  } = api.mealItems.updateAmountRequired.useMutation({
+    mutate: increaseAmountRequired,
+    isPending: isPendingIncreaseAmountRequired,
+  } = api.mealItems.increaseAmountRequired.useMutation({
+    onSuccess: async () => {
+      await utils.meals.getById.invalidate({
+        id: mealId,
+      });
+      await utils.shoppingList.getAll.invalidate();
+    },
+  });
+
+  const {
+    mutate: decreaseAmountRequired,
+    isPending: isPendingDecreaseAmountRequired,
+  } = api.mealItems.decreaseAmountRequired.useMutation({
     onSuccess: async () => {
       await utils.meals.getById.invalidate({
         id: mealId,
@@ -42,14 +54,17 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
     });
   };
 
-  const handleUpdateRequiredAmount = (amount: number) => {
-    if (amountRequired === null) {
-      return;
-    }
-
-    updateAmountRequired({
+  const handleIncreaseAmountRequired = () => {
+    increaseAmountRequired({
       id,
-      amount: amountRequired + amount,
+      amount: 1,
+    });
+  };
+
+  const handleDecreaseAmountRequired = () => {
+    decreaseAmountRequired({
+      id,
+      amount: 1,
     });
   };
 
@@ -69,19 +84,19 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
       {useAmount && (
         <div className="flex items-center gap-1">
           <LoadingButton
-            variant="outline"
-            isLoading={isPendingUpdateAmountRequired}
+            variant="ghost"
+            isLoading={isPendingDecreaseAmountRequired}
             size="icon-sm"
-            onClick={() => handleUpdateRequiredAmount(-1)}
+            onClick={handleDecreaseAmountRequired}
           >
             <Minus />
           </LoadingButton>
-          <span className="px-2">{amountRequired}</span>
+          <span className="min-w-6 px-1 text-center">{amountRequired}</span>
           <LoadingButton
-            variant="outline"
-            isLoading={isPendingUpdateAmountRequired}
+            variant="ghost"
+            isLoading={isPendingIncreaseAmountRequired}
             size="icon-sm"
-            onClick={() => handleUpdateRequiredAmount(1)}
+            onClick={handleIncreaseAmountRequired}
           >
             <Plus />
           </LoadingButton>

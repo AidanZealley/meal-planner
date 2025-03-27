@@ -126,35 +126,37 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
         </span>
       </div>
 
-      {showQuantity && (
-        <div className="flex items-center gap-1">
-          <LoadingButton
-            isLoading={isDecreasePending}
-            size="icon-sm"
-            variant="ghost"
-            onClick={handleDecrease}
-            disabled={amountUnplanned === 0}
-          >
-            <Minus />
-          </LoadingButton>
-          <LoadingButton
-            isLoading={isIncreasePending}
-            size="icon-sm"
-            variant="ghost"
-            onClick={handleIncrease}
-          >
-            <Plus />
-          </LoadingButton>
-          <LoadingButton
-            isLoading={isDeletePending}
-            size="icon-sm"
-            variant="destructive"
-            onClick={handleDelete}
-          >
-            <Trash2 />
-          </LoadingButton>
-        </div>
-      )}
+      <div className="flex items-center gap-1">
+        {showQuantity && (
+          <>
+            <LoadingButton
+              isLoading={isDecreasePending}
+              size="icon-sm"
+              variant="ghost"
+              onClick={handleDecrease}
+              disabled={amountUnplanned === 0}
+            >
+              <Minus />
+            </LoadingButton>
+            <LoadingButton
+              isLoading={isIncreasePending}
+              size="icon-sm"
+              variant="ghost"
+              onClick={handleIncrease}
+            >
+              <Plus />
+            </LoadingButton>
+          </>
+        )}
+        <LoadingButton
+          isLoading={isDeletePending}
+          size="icon-sm"
+          variant="destructive"
+          onClick={handleDelete}
+        >
+          <Trash2 />
+        </LoadingButton>
+      </div>
     </div>
   );
 };

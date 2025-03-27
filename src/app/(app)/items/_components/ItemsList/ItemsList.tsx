@@ -5,22 +5,22 @@ import { ItemsListItem } from "../ItemsListItem";
 import { useState } from "react";
 
 export const ItemsList = () => {
-  const [isEditingId, setIsEditingId] = useState<string | null>(null);
+  const [isExpandedId, setIsExpandedId] = useState<string | null>(null);
 
   const [items] = api.items.getAll.useSuspenseQuery();
 
   const handleEdit = (id: string | null) => {
-    setIsEditingId(id);
+    setIsExpandedId(id);
   };
 
   return (
-    <div className="grid gap-1 pl-3 pr-5">
+    <div className="grid gap-1 px-3">
       {items.map((item) => (
         <ItemsListItem
           key={item.id}
           item={item}
-          isEditingId={isEditingId}
-          handleEdit={handleEdit}
+          isExpandedId={isExpandedId}
+          handleExpanded={handleEdit}
         />
       ))}
     </div>

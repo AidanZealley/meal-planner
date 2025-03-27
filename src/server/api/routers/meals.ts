@@ -4,6 +4,7 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { meals } from "@/server/db/schema";
 import { generateShoppingList } from "../utils/shoppingList";
+import { TRPCError } from "@trpc/server";
 
 export const mealsRouter = createTRPCRouter({
   create: protectedProcedure
@@ -71,6 +72,16 @@ export const mealsRouter = createTRPCRouter({
           eq(meals.userId, ctx.session.user.id),
         ),
         orderBy: (meals, { desc }) => [desc(meals.createdAt)],
+      });
+
+      if (!meal) {
+        throw new TRPCError({ code: "NOT_FOUND" });
+      }
+
+      meal.mealItems.sort((a, b) => {
+        if (a.item.name < b.item.name) return -1;
+        if (a.item.name > b.item.name) return 1;
+        return 0;
       });
 
       return meal;

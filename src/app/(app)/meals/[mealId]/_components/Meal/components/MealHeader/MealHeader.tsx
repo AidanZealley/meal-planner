@@ -28,7 +28,7 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href="/items">Meals</BreadcrumbLink>
+              <BreadcrumbLink href="/meals">Meals</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
           </BreadcrumbList>

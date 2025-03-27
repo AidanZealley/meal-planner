@@ -1,8 +1,8 @@
-import { and, eq } from "drizzle-orm";
+import { and, asc, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
-import { mealItems } from "@/server/db/schema";
+import { items, mealItems } from "@/server/db/schema";
 import { generateShoppingList } from "../utils/shoppingList";
 
 export const mealItemsRouter = createTRPCRouter({
@@ -35,16 +35,32 @@ export const mealItemsRouter = createTRPCRouter({
       });
     }),
 
-  updateAmountRequired: protectedProcedure
-    .input(z.object({ id: z.string(), amount: z.number() }))
+  increaseAmountRequired: protectedProcedure
+    .input(z.object({ id: z.string(), amount: z.number().positive() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
-        await ctx.db
+        await tx
           .update(mealItems)
           .set({
-            amountRequired: input.amount,
+            amountRequired: sql`${mealItems.amountRequired} + ${input.amount}`,
           })
           .where(eq(mealItems.id, input.id));
+
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
+  decreaseAmountRequired: protectedProcedure
+    .input(z.object({ id: z.string(), amount: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(mealItems)
+          .set({
+            amountRequired: sql`GREATEST(${mealItems.amountRequired} - ${input.amount}, 1)`,
+          })
+          .where(eq(mealItems.id, input.id));
+
         await generateShoppingList(tx, ctx.session.session);
       });
     }),
@@ -52,17 +68,25 @@ export const mealItemsRouter = createTRPCRouter({
   getAll: protectedProcedure
     .input(z.object({ mealId: z.string() }))
     .query(async ({ ctx, input }) => {
-      const items = await ctx.db.query.mealItems.findMany({
-        with: {
-          item: true,
-        },
-        where: and(
-          eq(mealItems.mealId, input.mealId),
-          eq(mealItems.userId, ctx.session.user.id),
-        ),
-        orderBy: (mealItems, { desc }) => [desc(mealItems.createdAt)],
-      });
+      const mealItemsWithItem = await ctx.db
+        .select({
+          id: mealItems.id,
+          mealId: mealItems.mealId,
+          itemId: mealItems.itemId,
+          createdAt: mealItems.createdAt,
+          amountRequired: mealItems.amountRequired,
+          item: items,
+        })
+        .from(mealItems)
+        .innerJoin(items, eq(mealItems.itemId, items.id))
+        .where(
+          and(
+            eq(mealItems.mealId, input.mealId),
+            eq(mealItems.userId, ctx.session.user.id),
+          ),
+        )
+        .orderBy(asc(items.name));
 
-      return items;
+      return mealItemsWithItem;
     }),
 });

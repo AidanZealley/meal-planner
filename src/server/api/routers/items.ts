@@ -1,5 +1,6 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { items } from "@/server/db/schema";
@@ -80,11 +81,48 @@ export const itemsRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ ctx, input }) => {
+      if (input.amountAvailable < 0) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Amount cannot be negative",
+        });
+      }
+
       await ctx.db.transaction(async (tx) => {
         await tx
           .update(items)
           .set({
             amountAvailable: input.amountAvailable,
+          })
+          .where(eq(items.id, input.id));
+
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
+  increaseAmountAvailable: protectedProcedure
+    .input(z.object({ id: z.string(), amount: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(items)
+          .set({
+            amountAvailable: sql`${items.amountAvailable} + ${input.amount}`,
+          })
+          .where(eq(items.id, input.id));
+
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
+  decreaseAmountAvailable: protectedProcedure
+    .input(z.object({ id: z.string(), amount: z.number().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(items)
+          .set({
+            amountAvailable: sql`greatest(0, ${items.amountAvailable} - ${input.amount})`,
           })
           .where(eq(items.id, input.id));
 
@@ -121,7 +159,7 @@ export const itemsRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
     const items = await ctx.db.query.items.findMany({
       where: (items) => eq(items.userId, ctx.session.user.id),
-      orderBy: (items, { desc }) => [desc(items.createdAt)],
+      orderBy: (items, { asc }) => [asc(items.name)],
     });
 
     return items;
