@@ -9,8 +9,64 @@ import {
 import { Card, CardContent } from "@/components/ui/card";
 import { formatDate } from "date-fns";
 import { type MealHeaderProps } from "./MealHeader.types";
+import { CalendarMinus, CalendarPlus, Trash2 } from "lucide-react";
+import { api } from "@/trpc/react";
+import { LoadingButton } from "@/components/LoadingButton";
 
 export const MealHeader = ({ meal }: MealHeaderProps) => {
+  const { id } = meal;
+
+  const utils = api.useUtils();
+
+  const { mutate: planMeal, isPending: isPlanPending } =
+    api.plannedMeals.create.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.meals.getAll.invalidate(),
+          utils.meals.getById.invalidate({ id }),
+          utils.plannedMeals.getAllByStatus.invalidate({ status: "planned" }),
+          utils.plannedMeals.getAllByStatus.invalidate({ status: "cooked" }),
+          utils.shoppingList.getAll.invalidate(),
+        ]);
+      },
+    });
+
+  const { mutate: unplanMeal, isPending: isUnplanPending } =
+    api.plannedMeals.delete.useMutation({
+      onSuccess: async () => {
+        await Promise.all([
+          utils.meals.getAll.invalidate(),
+          utils.meals.getById.invalidate({ id }),
+          utils.plannedMeals.getAllByStatus.invalidate({ status: "planned" }),
+          utils.plannedMeals.getAllByStatus.invalidate({ status: "cooked" }),
+          utils.shoppingList.getAll.invalidate(),
+        ]);
+      },
+    });
+
+  const { mutate: deleteMeal, isPending: isDeletePending } =
+    api.meals.delete.useMutation({
+      onSuccess: async () => {
+        await utils.meals.getAll.invalidate();
+      },
+    });
+
+  const handlePlanMeal = () => {
+    planMeal({
+      mealId: id,
+    });
+  };
+
+  const handleUnplanMeal = () => {
+    unplanMeal({
+      mealId: id,
+    });
+  };
+
+  const handleDelete = () => {
+    deleteMeal({ id });
+  };
+
   const currentlyPlanned = meal?.plannedMeals.find(
     (plannedMeal) => plannedMeal.status === "planned",
   );
@@ -34,17 +90,43 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
           </BreadcrumbList>
         </Breadcrumb>
         <div className="grid gap-3">
-          <h1 className="flex items-center gap-3 text-3xl font-bold">
-            {meal?.name}
-            {currentlyPlanned && (
-              <Badge className="whitespace-nowrap" variant="secondary">
-                {currentlyPlanned.status}
-              </Badge>
-            )}
-          </h1>
+          <div className="flex items-center justify-between gap-3">
+            <h1 className="flex items-center gap-3 text-3xl font-bold">
+              {meal?.name}
+            </h1>
+
+            <div className="flex gap-2">
+              <LoadingButton
+                onClick={currentlyPlanned ? handleUnplanMeal : handlePlanMeal}
+                variant="secondary"
+                isLoading={isPlanPending || isUnplanPending}
+              >
+                <span className="flex items-center gap-2">
+                  {currentlyPlanned ? <CalendarMinus /> : <CalendarPlus />}
+                  {currentlyPlanned ? "Unplan Meal" : "Plan Meal"}
+                </span>
+              </LoadingButton>
+              <LoadingButton
+                onClick={handleDelete}
+                size="icon"
+                variant="destructive"
+                isLoading={isDeletePending}
+              >
+                <Trash2 className="h-4 w-4" />
+              </LoadingButton>
+            </div>
+          </div>
           <span className="text-xs text-muted-foreground">
             Created {formatDate(meal?.createdAt, "do, MMM")}
           </span>
+
+          {currentlyPlanned && (
+            <div>
+              <Badge className="whitespace-nowrap" variant="secondary">
+                {currentlyPlanned.status}
+              </Badge>
+            </div>
+          )}
         </div>
       </div>
 
