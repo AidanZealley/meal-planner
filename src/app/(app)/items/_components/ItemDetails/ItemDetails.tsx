@@ -1,5 +1,5 @@
 import { Switch } from "@/components/ui/switch";
-import { ItemDetailsProps } from "./ItemDetails.types";
+import type { ItemDetailsProps } from "./ItemDetails.types";
 import { api } from "@/trpc/react";
 import { Label } from "@/components/ui/label";
 import { LoadingButton } from "@/components/LoadingButton";
@@ -7,6 +7,7 @@ import { ArrowRight, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ItemAmountAvailable } from "../ItemAmountAvailable";
 import Link from "next/link";
+import { Spinner } from "@/components/Spinner";
 
 export const ItemDetails = ({ item }: ItemDetailsProps) => {
   const { id, type, amountAvailable } = item;
@@ -17,29 +18,15 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
 
   const { mutate: updateType, isPending: isUpdatingType } =
     api.items.updateType.useMutation({
-      onSuccess: () => {
-        utils.items.getAll.invalidate();
+      onSuccess: async () => {
+        await utils.items.getAll.invalidate();
       },
     });
 
   const { mutate: updateInStock, isPending: isUpdatingInStock } =
     api.items.updateInStock.useMutation({
-      onSuccess: () => {
-        utils.items.getAll.invalidate();
-      },
-    });
-
-  const { mutate: increaseAmountAvailable, isPending: isIncreasing } =
-    api.items.increaseAmountAvailable.useMutation({
-      onSuccess: () => {
-        utils.items.getAll.invalidate();
-      },
-    });
-
-  const { mutate: decreaseAmountAvailable, isPending: isDecreasing } =
-    api.items.decreaseAmountAvailable.useMutation({
-      onSuccess: () => {
-        utils.items.getAll.invalidate();
+      onSuccess: async () => {
+        await utils.items.getAll.invalidate();
       },
     });
 
@@ -62,6 +49,8 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
         <Label htmlFor="useAmount" className="text-sm">
           Use Amount
         </Label>
+
+        {isUpdatingType && <Spinner className="h-4 w-4" />}
       </div>
 
       <div className="@md/item:col-span-full @md/item:justify-center col-start-2 row-start-1 flex justify-end">
@@ -86,7 +75,7 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
         )}
       </div>
 
-      <div className="@md/item:row-start-1 @md/item:justify-end @md/item:col-start-2 col-span-full col-start-1 row-start-2 grid justify-items-stretch">
+      <div className="@md/item:col-start-2 @md/item:row-start-1 @md/item:justify-end col-span-full col-start-1 row-start-2 grid justify-items-stretch">
         <Button variant="ghost" asChild>
           <Link href={`/items/${id}`}>
             <span className="flex items-center gap-2">

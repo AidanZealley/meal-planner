@@ -1,7 +1,7 @@
 import { api } from "@/trpc/react";
 import { Minus, Plus } from "lucide-react";
 import { LoadingButton } from "@/components/LoadingButton";
-import { ItemAmountAvailableProps } from "./ItemAmountAvailable.types";
+import type { ItemAmountAvailableProps } from "./ItemAmountAvailable.types";
 
 export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
   const { id, amountAvailable } = item;
@@ -10,20 +10,20 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
 
   const { mutate: increaseAmountAvailable, isPending: isIncreasing } =
     api.items.increaseAmountAvailable.useMutation({
-      onSuccess: () => {
-        utils.items.getAll.invalidate();
+      onSuccess: async () => {
+        await utils.items.getAll.invalidate();
       },
     });
 
   const { mutate: decreaseAmountAvailable, isPending: isDecreasing } =
     api.items.decreaseAmountAvailable.useMutation({
-      onSuccess: () => {
-        utils.items.getAll.invalidate();
+      onSuccess: async () => {
+        await utils.items.getAll.invalidate();
       },
     });
 
   return (
-    <div className="@md/item:min-w-32 flex min-w-24 items-center justify-between gap-1 rounded-lg p-1 outline outline-secondary">
+    <div className="outline-secondary flex min-w-24 items-center justify-between gap-1 rounded-lg p-1 outline @md/item:min-w-32">
       <LoadingButton
         size="icon-xs"
         variant="ghost"
