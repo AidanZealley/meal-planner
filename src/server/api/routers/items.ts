@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
@@ -100,6 +100,22 @@ export const itemsRouter = createTRPCRouter({
       });
     }),
 
+  updateAmount: protectedProcedure
+    .input(
+      z.object({
+        id: z.string().min(1),
+        amount: z.number().min(0),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db
+        .update(items)
+        .set({
+          amountAvailable: input.amount,
+        })
+        .where(eq(items.id, input.id));
+    }),
+
   increaseAmountAvailable: protectedProcedure
     .input(z.object({ id: z.string(), amount: z.number().positive() }))
     .mutation(async ({ ctx, input }) => {
@@ -107,7 +123,7 @@ export const itemsRouter = createTRPCRouter({
         await tx
           .update(items)
           .set({
-            amountAvailable: sql`${items.amountAvailable} + ${input.amount}`,
+            amountAvailable: input.amount,
           })
           .where(eq(items.id, input.id));
 
@@ -122,7 +138,7 @@ export const itemsRouter = createTRPCRouter({
         await tx
           .update(items)
           .set({
-            amountAvailable: sql`greatest(0, ${items.amountAvailable} - ${input.amount})`,
+            amountAvailable: Math.max(0, input.amount),
           })
           .where(eq(items.id, input.id));
 
