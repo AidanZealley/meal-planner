@@ -90,7 +90,7 @@ export const MealHeader = ({ meal }: MealHeaderProps) => {
           </BreadcrumbList>
         </Breadcrumb>
         <div className="grid gap-3">
-          <div className="flex items-center justify-between gap-3">
+          <div className="grid gap-3 md:flex md:items-center md:justify-between">
             <h1 className="flex items-center gap-3 text-3xl font-bold">
               {meal?.name}
             </h1>
