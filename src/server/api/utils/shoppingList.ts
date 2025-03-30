@@ -56,8 +56,7 @@ export const generateShoppingList = async (
           eq(mealItems.userId, session.userId),
         ),
       )
-      .groupBy(items.id, items.type, items.amountAvailable)
-      .having(sql`
+      .groupBy(items.id, items.type, items.amountAvailable).having(sql`
         CASE 
           WHEN ${items.type} = 'boolean' THEN 
             ${items.amountAvailable} = 0 AND COUNT(*) > 0
@@ -65,7 +64,6 @@ export const generateShoppingList = async (
             SUM(${mealItems.amountRequired}) > ${items.amountAvailable}
         END
       `);
-    console.log(outOfStockPlannedItems);
     // TODO - Work out if list is the same and return early
 
     const itemsToInsert = outOfStockPlannedItems.reduce(

@@ -132,7 +132,7 @@ export const itemsRouter = createTRPCRouter({
     }),
 
   decreaseAmountAvailable: protectedProcedure
-    .input(z.object({ id: z.string(), amount: z.number().positive() }))
+    .input(z.object({ id: z.string(), amount: z.number() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         await tx

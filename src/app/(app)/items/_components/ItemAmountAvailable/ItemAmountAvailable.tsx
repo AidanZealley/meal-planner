@@ -7,7 +7,7 @@ import { type ItemAmountAvailableProps } from "./ItemAmountAvailable.types";
 export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
   const { id, amountAvailable } = item;
 
-  const [pendingAmount, setPendingAmount] = useState(0);
+  const [pendingChange, setPendingChange] = useState<number>(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const utils = api.useUtils();
@@ -16,6 +16,7 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
     api.items.increaseAmountAvailable.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
+        setPendingChange(0);
       },
     });
 
@@ -23,33 +24,38 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
     api.items.decreaseAmountAvailable.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
+        setPendingChange(0);
       },
     });
 
   const handleIncrement = () => {
-    const newAmount = Math.max(0, amountAvailable + pendingAmount + 1);
-    setPendingAmount(newAmount - amountAvailable);
+    const newPendingChange = pendingChange + 1;
+    const newAmount = amountAvailable + newPendingChange;
+
+    setPendingChange(newPendingChange);
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = setTimeout(() => {
-      increaseAmount({ id, amount: 1 });
-    }, 300);
+      increaseAmount({ id, amount: newAmount });
+    }, 500);
   };
 
   const handleDecrement = () => {
-    const newAmount = Math.max(0, amountAvailable + pendingAmount - 1);
-    setPendingAmount(newAmount - amountAvailable);
+    const newPendingChange = Math.max(pendingChange - 1, -amountAvailable);
+    const newAmount = Math.max(0, amountAvailable + newPendingChange);
+
+    setPendingChange(newPendingChange);
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
     timeoutRef.current = setTimeout(() => {
-      decreaseAmount({ id, amount: 1 });
-    }, 300);
+      decreaseAmount({ id, amount: newAmount });
+    }, 500);
   };
 
   useEffect(() => {
@@ -67,13 +73,17 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
         variant="ghost"
         isLoading={decreasePending}
         onClick={handleDecrement}
-        disabled={decreasePending}
+        disabled={
+          decreasePending ||
+          increasePending ||
+          pendingChange + amountAvailable === 0
+        }
       >
         <Minus className="h-3 w-3" />
       </LoadingButton>
       <span className="px-2 text-sm">
-        {pendingAmount !== null
-          ? pendingAmount + amountAvailable
+        {pendingChange !== 0
+          ? pendingChange + amountAvailable
           : amountAvailable}
       </span>
       <LoadingButton
@@ -81,7 +91,7 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
         variant="ghost"
         isLoading={increasePending}
         onClick={handleIncrement}
-        disabled={increasePending}
+        disabled={decreasePending || increasePending}
       >
         <Plus className="h-3 w-3" />
       </LoadingButton>
