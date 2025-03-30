@@ -23,42 +23,44 @@ export const useDebouncedCounter = ({
   minValue = -Infinity,
   maxValue = Infinity,
 }: UseDebouncedCounterProps): UseDebouncedCounterReturn => {
-  const [debouncedValue, setDebouncedValue] = useState(0);
+  const [change, setChange] = useState(0);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleIncrement = useCallback(() => {
-    const newValue = Math.min(debouncedValue + 1, maxValue - value);
-    setDebouncedValue(newValue);
+    const newValue = Math.min(change + 1, maxValue - value);
+    setChange(newValue);
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    timeoutRef.current = setTimeout(async () => {
+    const handleTimeout = async () => {
       await onIncrement(value + newValue);
-      setDebouncedValue(0);
-    }, timeout);
-  }, [debouncedValue, value, maxValue, onIncrement, timeout]);
+      setChange(0);
+    };
+    timeoutRef.current = setTimeout(() => void handleTimeout(), timeout);
+  }, [change, value, maxValue, onIncrement, timeout]);
 
   const handleDecrement = useCallback(() => {
-    const newValue = debouncedValue - 1;
+    const newValue = change - 1;
     const newTotal = Math.max(minValue, value + newValue);
 
     if (newTotal === value) {
       return;
     }
 
-    setDebouncedValue(newValue);
+    setChange(newValue);
 
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
 
-    timeoutRef.current = setTimeout(async () => {
+    const handleTimeout = async () => {
       await onDecrement(value + newValue);
-      setDebouncedValue(0);
-    }, timeout);
-  }, [debouncedValue, value, minValue, onDecrement, timeout]);
+      setChange(0);
+    };
+    timeoutRef.current = setTimeout(() => void handleTimeout(), timeout);
+  }, [change, value, minValue, onDecrement, timeout]);
 
   useEffect(() => {
     return () => {
@@ -68,9 +70,9 @@ export const useDebouncedCounter = ({
     };
   }, []);
 
-  return { 
-    debouncedValue: value + debouncedValue,
+  return {
+    debouncedValue: value + change,
     handleIncrement,
-    handleDecrement
+    handleDecrement,
   };
 };

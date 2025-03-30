@@ -1,9 +1,8 @@
-import { useEffect, useState, useRef } from "react";
 import { api } from "@/trpc/react";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Minus, Plus } from "lucide-react";
 import { type ItemAmountAvailableProps } from "./ItemAmountAvailable.types";
-import { useDebouncedCounter } from "../../../hooks/useDebouncedCounter";
+import { useDebouncedCounter } from "@/app/(app)/hooks/useDebouncedCounter";
 
 export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
   const { id, amountAvailable } = item;
@@ -50,17 +49,11 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
         variant="ghost"
         isLoading={decreasePending}
         onClick={handleDecrement}
-        disabled={
-          decreasePending ||
-          increasePending ||
-          debouncedValue === 0
-        }
+        disabled={decreasePending || increasePending || debouncedValue === 0}
       >
         <Minus className="h-3 w-3" />
       </LoadingButton>
-      <span className="px-2 text-sm">
-        {debouncedValue}
-      </span>
+      <span className="px-2 text-sm">{debouncedValue}</span>
       <LoadingButton
         size="icon-xs"
         variant="ghost"

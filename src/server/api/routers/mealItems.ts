@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
@@ -36,13 +36,13 @@ export const mealItemsRouter = createTRPCRouter({
     }),
 
   increaseAmountRequired: protectedProcedure
-    .input(z.object({ id: z.string(), amount: z.number().positive() }))
+    .input(z.object({ id: z.string(), amount: z.number() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         await tx
           .update(mealItems)
           .set({
-            amountRequired: sql`${mealItems.amountRequired} + ${input.amount}`,
+            amountRequired: input.amount,
           })
           .where(eq(mealItems.id, input.id));
 
@@ -51,13 +51,13 @@ export const mealItemsRouter = createTRPCRouter({
     }),
 
   decreaseAmountRequired: protectedProcedure
-    .input(z.object({ id: z.string(), amount: z.number().positive() }))
+    .input(z.object({ id: z.string(), amount: z.number() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         await tx
           .update(mealItems)
           .set({
-            amountRequired: sql`GREATEST(${mealItems.amountRequired} - ${input.amount}, 1)`,
+            amountRequired: Math.max(0, input.amount),
           })
           .where(eq(mealItems.id, input.id));
 
