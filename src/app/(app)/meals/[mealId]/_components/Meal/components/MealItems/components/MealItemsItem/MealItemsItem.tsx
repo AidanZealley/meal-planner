@@ -3,6 +3,7 @@ import { type MealItemsItemProps } from "./MealItemsItem.types";
 import { Minus, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LoadingButton } from "@/components/LoadingButton";
+import { useDebouncedCounter } from "@/app/(app)/hooks/useDebouncedCounter";
 
 export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
   const { id, item, mealId, amountRequired } = mealItem;
@@ -23,48 +24,49 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
       },
     });
 
-  const {
-    mutate: increaseAmountRequired,
-    isPending: isPendingIncreaseAmountRequired,
-  } = api.mealItems.increaseAmountRequired.useMutation({
-    onSuccess: async () => {
-      await utils.meals.getById.invalidate({
-        id: mealId,
-      });
-      await utils.shoppingList.getAll.invalidate();
-    },
-  });
+  const { mutateAsync: increaseAmountRequired, isPending: isPendingIncrement } =
+    api.mealItems.increaseAmountRequired.useMutation({
+      onSuccess: async () => {
+        await utils.meals.getById.invalidate({
+          id: mealId,
+        });
+        await utils.shoppingList.getAll.invalidate();
+      },
+    });
 
-  const {
-    mutate: decreaseAmountRequired,
-    isPending: isPendingDecreaseAmountRequired,
-  } = api.mealItems.decreaseAmountRequired.useMutation({
-    onSuccess: async () => {
-      await utils.meals.getById.invalidate({
-        id: mealId,
-      });
-      await utils.shoppingList.getAll.invalidate();
-    },
-  });
+  const { mutateAsync: decreaseAmountRequired, isPending: isPendingDecrement } =
+    api.mealItems.decreaseAmountRequired.useMutation({
+      onSuccess: async () => {
+        await utils.meals.getById.invalidate({
+          id: mealId,
+        });
+        await utils.shoppingList.getAll.invalidate();
+      },
+    });
+
+  const { debouncedValue, handleIncrement, handleDecrement } =
+    useDebouncedCounter({
+      value: amountRequired,
+      onIncrement: async (newValue) => {
+        await increaseAmountRequired({
+          id,
+          amount: newValue,
+        });
+      },
+      onDecrement: async (newValue) => {
+        await decreaseAmountRequired({
+          id,
+          amount: newValue,
+        });
+      },
+      minValue: 0,
+      timeout: 500,
+    });
 
   const handleRemoveItem = () => {
     deletemealItem({
       mealId,
       itemId,
-    });
-  };
-
-  const handleIncreaseAmountRequired = () => {
-    increaseAmountRequired({
-      id,
-      amount: 1,
-    });
-  };
-
-  const handleDecreaseAmountRequired = () => {
-    decreaseAmountRequired({
-      id,
-      amount: 1,
     });
   };
 
@@ -82,23 +84,27 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
         {name}
       </span>
       {useAmount && (
-        <div className="flex items-center gap-1">
+        <div className="flex min-w-24 items-center justify-between gap-1 rounded-lg p-1 outline outline-secondary sm:min-w-32">
           <LoadingButton
             variant="ghost"
-            isLoading={isPendingDecreaseAmountRequired}
-            size="icon-sm"
-            onClick={handleDecreaseAmountRequired}
+            isLoading={isPendingDecrement}
+            size="icon-xs"
+            onClick={handleDecrement}
+            disabled={
+              isPendingDecrement || isPendingIncrement || debouncedValue === 0
+            }
           >
-            <Minus />
+            <Minus className="h-3 w-3" />
           </LoadingButton>
-          <span className="min-w-6 px-1 text-center">{amountRequired}</span>
+          <span className="px-2 text-sm">{debouncedValue}</span>
           <LoadingButton
             variant="ghost"
-            isLoading={isPendingIncreaseAmountRequired}
-            size="icon-sm"
-            onClick={handleIncreaseAmountRequired}
+            isLoading={isPendingIncrement}
+            size="icon-xs"
+            onClick={handleIncrement}
+            disabled={isPendingDecrement || isPendingIncrement}
           >
-            <Plus />
+            <Plus className="h-3 w-3" />
           </LoadingButton>
         </div>
       )}

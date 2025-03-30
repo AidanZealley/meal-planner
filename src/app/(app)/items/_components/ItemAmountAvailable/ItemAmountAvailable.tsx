@@ -1,70 +1,46 @@
-import { useEffect, useState, useRef } from "react";
 import { api } from "@/trpc/react";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Minus, Plus } from "lucide-react";
 import { type ItemAmountAvailableProps } from "./ItemAmountAvailable.types";
+import { useDebouncedCounter } from "@/app/(app)/hooks/useDebouncedCounter";
 
 export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
   const { id, amountAvailable } = item;
 
-  const [pendingChange, setPendingChange] = useState<number>(0);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
   const utils = api.useUtils();
 
-  const { mutate: increaseAmount, isPending: increasePending } =
+  const { mutateAsync: increaseAmount, isPending: increasePending } =
     api.items.increaseAmountAvailable.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
-        setPendingChange(0);
       },
     });
 
-  const { mutate: decreaseAmount, isPending: decreasePending } =
+  const { mutateAsync: decreaseAmount, isPending: decreasePending } =
     api.items.decreaseAmountAvailable.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
-        setPendingChange(0);
       },
     });
 
-  const handleIncrement = () => {
-    const newPendingChange = pendingChange + 1;
-    const newAmount = amountAvailable + newPendingChange;
-
-    setPendingChange(newPendingChange);
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      increaseAmount({ id, amount: newAmount });
-    }, 500);
-  };
-
-  const handleDecrement = () => {
-    const newPendingChange = Math.max(pendingChange - 1, -amountAvailable);
-    const newAmount = Math.max(0, amountAvailable + newPendingChange);
-
-    setPendingChange(newPendingChange);
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      decreaseAmount({ id, amount: newAmount });
-    }, 500);
-  };
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
-  }, []);
+  const { debouncedValue, handleIncrement, handleDecrement } =
+    useDebouncedCounter({
+      value: amountAvailable,
+      onIncrement: async (totalValue) => {
+        await increaseAmount({
+          id,
+          amount: totalValue,
+        });
+      },
+      onDecrement: async (totalValue) => {
+        await decreaseAmount({
+          id,
+          amount: Math.max(0, totalValue),
+        });
+      },
+      minValue: 0,
+      timeout: 500,
+    });
 
   return (
     <div className="flex min-w-24 items-center justify-between gap-1 rounded-lg p-1 outline outline-secondary sm:min-w-32">
@@ -73,19 +49,11 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
         variant="ghost"
         isLoading={decreasePending}
         onClick={handleDecrement}
-        disabled={
-          decreasePending ||
-          increasePending ||
-          pendingChange + amountAvailable === 0
-        }
+        disabled={decreasePending || increasePending || debouncedValue === 0}
       >
         <Minus className="h-3 w-3" />
       </LoadingButton>
-      <span className="px-2 text-sm">
-        {pendingChange !== 0
-          ? pendingChange + amountAvailable
-          : amountAvailable}
-      </span>
+      <span className="px-2 text-sm">{debouncedValue}</span>
       <LoadingButton
         size="icon-xs"
         variant="ghost"
