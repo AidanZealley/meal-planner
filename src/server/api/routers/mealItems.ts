@@ -36,7 +36,7 @@ export const mealItemsRouter = createTRPCRouter({
     }),
 
   increaseAmountRequired: protectedProcedure
-    .input(z.object({ id: z.string(), amount: z.number() }))
+    .input(z.object({ id: z.string(), amount: z.number().positive() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         await tx

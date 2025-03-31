@@ -59,8 +59,7 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
           amount: newValue,
         });
       },
-      minValue: 0,
-      timeout: 500,
+      minValue: 1,
     });
 
   const handleRemoveItem = () => {

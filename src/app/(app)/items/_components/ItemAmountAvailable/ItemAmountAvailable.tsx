@@ -39,7 +39,6 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
         });
       },
       minValue: 0,
-      timeout: 500,
     });
 
   return (
