@@ -59,7 +59,7 @@ export const shoppingListRouter = createTRPCRouter({
     }),
 
   increaseQuantity: protectedProcedure
-    .input(z.object({ itemId: z.string() }))
+    .input(z.object({ itemId: z.string(), amount: z.number().positive() }))
     .mutation(async ({ ctx, input }) => {
       await ctx.db.transaction(async (tx) => {
         const item = await tx.query.items.findFirst({
@@ -74,19 +74,20 @@ export const shoppingListRouter = createTRPCRouter({
           });
         }
 
-        await ctx.db.insert(shoppingList).values({
-          itemId: input.itemId,
-          userId: ctx.session.user.id,
-        });
+        await tx.insert(shoppingList).values(
+          Array.from({ length: input.amount }, () => ({
+            itemId: input.itemId,
+            userId: ctx.session.user.id,
+          })),
+        );
       });
     }),
-  // TODO - Throw error if no unplanned items left to delete
+
   decreaseQuantity: protectedProcedure
-    .input(z.object({ itemId: z.string() }))
+    .input(z.object({ itemId: z.string(), amount: z.number().positive() }))
     .mutation(async ({ ctx, input }) => {
       const deletedRows = await ctx.db.execute(sql`
-        DELETE FROM ${shoppingList}
-        WHERE ${shoppingList.id} = (
+        WITH unplanned_items AS (
           SELECT ${shoppingList.id}
           FROM ${shoppingList}
           INNER JOIN ${items} ON ${shoppingList.itemId} = ${items.id}
@@ -94,8 +95,10 @@ export const shoppingListRouter = createTRPCRouter({
             AND ${shoppingList.planned} = FALSE
             AND ${items.type} = 'amount'
             AND ${shoppingList.userId} = ${ctx.session.user.id}
-          LIMIT 1
+          LIMIT ${input.amount}
         )
+        DELETE FROM ${shoppingList}
+        WHERE ${shoppingList.id} IN (SELECT id FROM unplanned_items)
         RETURNING *;
       `);
 

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { useDebouncedCounter } from "@/app/(app)/hooks/useDebouncedCounter";
 
 export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const {
@@ -17,7 +18,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   } = item;
   const utils = api.useUtils();
 
-  const { mutate: increaseQuantity, isPending: isIncreasePending } =
+  const { mutateAsync: increaseQuantity, isPending: isIncreasePending } =
     api.shoppingList.increaseQuantity.useMutation({
       onSuccess: async () => {
         await Promise.all([
@@ -31,7 +32,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
         });
       },
     });
-  const { mutate: decreaseQuantity, isPending: isDecreasePending } =
+  const { mutateAsync: decreaseQuantity, isPending: isDecreasePending } =
     api.shoppingList.decreaseQuantity.useMutation({
       onSuccess: async () => {
         await Promise.all([
@@ -44,6 +45,23 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
           description: error.message,
         });
       },
+    });
+
+  // Calculate planned items (total needed minus unplanned)
+  const plannedItems = amountNeeded - amountUnplanned;
+
+  const { debouncedValue, handleIncrement, handleDecrement } =
+    useDebouncedCounter({
+      value: amountUnplanned,
+      onIncrement: async (newValue) => {
+        const amount = newValue - amountUnplanned;
+        await increaseQuantity({ itemId, amount });
+      },
+      onDecrement: async (newValue) => {
+        const amount = amountUnplanned - newValue;
+        await decreaseQuantity({ itemId, amount });
+      },
+      minValue: Math.max(1, plannedItems),
     });
   const { mutate: updateItem, isPending: isUpdatePending } =
     api.shoppingList.toggleDone.useMutation({
@@ -68,14 +86,6 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
     }
 
     updateItem({ itemId, done: !done });
-  };
-
-  const handleIncrease = () => {
-    increaseQuantity({ itemId });
-  };
-
-  const handleDecrease = () => {
-    decreaseQuantity({ itemId });
   };
 
   const handleDelete = () => {
@@ -126,27 +136,31 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
         </span>
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         {showQuantity && (
-          <>
+          <div className="flex min-w-24 items-center justify-between gap-1 rounded-lg p-1 outline outline-secondary sm:min-w-32">
             <LoadingButton
+              variant="ghost"
               isLoading={isDecreasePending}
-              size="icon-sm"
-              variant="ghost"
-              onClick={handleDecrease}
-              disabled={amountUnplanned === 0}
+              size="icon-xs"
+              onClick={handleDecrement}
+              disabled={
+                isDecreasePending || isIncreasePending || debouncedValue === 1
+              }
             >
-              <Minus />
+              <Minus className="h-3 w-3" />
             </LoadingButton>
+            <span className="px-2 text-sm">{debouncedValue}</span>
             <LoadingButton
-              isLoading={isIncreasePending}
-              size="icon-sm"
               variant="ghost"
-              onClick={handleIncrease}
+              isLoading={isIncreasePending}
+              size="icon-xs"
+              onClick={handleIncrement}
+              disabled={isDecreasePending || isIncreasePending}
             >
-              <Plus />
+              <Plus className="h-3 w-3" />
             </LoadingButton>
-          </>
+          </div>
         )}
         <LoadingButton
           isLoading={isDeletePending}
