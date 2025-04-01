@@ -14,15 +14,19 @@ export const generateShoppingList = async (
   session: Session,
 ) => {
   try {
-    await tx
-      .delete(shoppingList)
-      .where(
-        and(
-          eq(shoppingList.userId, session.userId),
-          eq(shoppingList.done, true),
-        ),
-      )
-      .returning();
+    // Check if all shopping list items for this user are done
+    const allDone = await tx
+      .select()
+      .from(shoppingList)
+      .where(eq(shoppingList.userId, session.userId))
+      .then((items) => items.every((item) => item.done));
+
+    // Only delete if everything is done
+    if (allDone) {
+      await tx
+        .delete(shoppingList)
+        .where(eq(shoppingList.userId, session.userId));
+    }
 
     // // Fetch previous shopping list for the user
     // const previousPlannedItems = await tx
