@@ -27,7 +27,7 @@
     --chart-3: 72 7.85% 60.77%;
     --chart-4: 72 13.54% 77.76%;
     --chart-5: 72 22.52% 86.1%;
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
     --sidebar-background: var(--card);
     --sidebar-foreground: var(--foreground);

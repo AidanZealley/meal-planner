@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 
@@ -6,6 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { items } from "@/server/db/schema";
 import { generateShoppingList } from "../utils/shoppingList";
 import { ItemTypeValues } from "@/lib/enums";
+import { stockCheckFormSchema } from "@/app/(app)/_components/StockDialog/StockDialog.schemas";
 
 export const itemsRouter = createTRPCRouter({
   create: protectedProcedure
@@ -73,6 +74,18 @@ export const itemsRouter = createTRPCRouter({
       });
     }),
 
+  updateMultipleBooleanInStock: protectedProcedure
+    .input(stockCheckFormSchema)
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.transaction(async (tx) => {
+        await tx
+          .update(items)
+          .set({ amountAvailable: 0 })
+          .where(inArray(items.id, input.outOfStockItems));
+        await generateShoppingList(tx, ctx.session.session);
+      });
+    }),
+
   updateAmountAvailable: protectedProcedure
     .input(
       z.object({
@@ -98,22 +111,6 @@ export const itemsRouter = createTRPCRouter({
 
         await generateShoppingList(tx, ctx.session.session);
       });
-    }),
-
-  updateAmount: protectedProcedure
-    .input(
-      z.object({
-        id: z.string().min(1),
-        amount: z.number().min(0),
-      }),
-    )
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db
-        .update(items)
-        .set({
-          amountAvailable: input.amount,
-        })
-        .where(eq(items.id, input.id));
     }),
 
   increaseAmountAvailable: protectedProcedure
