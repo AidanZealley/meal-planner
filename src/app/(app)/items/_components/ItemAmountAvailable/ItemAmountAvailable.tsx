@@ -13,6 +13,7 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
     api.items.increaseAmountAvailable.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
+        await utils.meals.getById.invalidate();
       },
     });
 
@@ -20,6 +21,7 @@ export const ItemAmountAvailable = ({ item }: ItemAmountAvailableProps) => {
     api.items.decreaseAmountAvailable.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
+        await utils.meals.getById.invalidate();
       },
     });
 

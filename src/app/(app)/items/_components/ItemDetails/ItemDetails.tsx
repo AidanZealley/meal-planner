@@ -27,6 +27,7 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
     api.items.updateInStock.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
+        await utils.meals.getById.invalidate();
       },
     });
 
@@ -38,7 +39,7 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
   };
 
   return (
-    <div className="@md/item:grid-cols-[1fr_1fr] grid grid-cols-[1fr_auto] items-center gap-2">
+    <div className="grid grid-cols-[1fr_auto] items-center gap-2 @md/item:grid-cols-[1fr_1fr]">
       <div className="relative col-start-1 row-start-1 flex items-center gap-2 pl-2">
         <Switch
           id="useAmount"
@@ -53,7 +54,7 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
         {isUpdatingType && <Spinner className="h-4 w-4" />}
       </div>
 
-      <div className="@md/item:col-span-full @md/item:justify-center col-start-2 row-start-1 flex justify-end">
+      <div className="col-start-2 row-start-1 flex justify-end @md/item:col-span-full @md/item:justify-center">
         {type === "amount" ? (
           <ItemAmountAvailable item={item} />
         ) : (
@@ -75,7 +76,7 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
         )}
       </div>
 
-      <div className="@md/item:col-start-2 @md/item:row-start-1 @md/item:justify-end col-span-full col-start-1 row-start-2 grid justify-items-stretch">
+      <div className="col-span-full col-start-1 row-start-2 grid justify-items-stretch @md/item:col-start-2 @md/item:row-start-1 @md/item:justify-end">
         <Button variant="ghost" asChild>
           <Link href={`/items/${id}`}>
             <span className="flex items-center gap-2">
