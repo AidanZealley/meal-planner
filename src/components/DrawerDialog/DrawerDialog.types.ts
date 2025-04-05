@@ -6,5 +6,4 @@ export type DrawerDialogProps = PropsWithChildren & {
   title: string;
   description?: string;
   trigger?: React.ReactNode;
-  customTrigger?: React.ReactNode;
 };
