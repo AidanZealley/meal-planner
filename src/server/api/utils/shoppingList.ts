@@ -69,7 +69,7 @@ export const generateShoppingList = async (
         END
       `);
     // TODO - Work out if list is the same and return early
-
+    console.log(outOfStockPlannedItems);
     const itemsToInsert = outOfStockPlannedItems.reduce(
       (items, { itemId, type, amountNeeded }) => [
         ...items,
@@ -98,10 +98,6 @@ export const generateShoppingList = async (
         userId: string;
       }[],
     );
-
-    if (!itemsToInsert.length) {
-      return;
-    }
 
     // Delete old planned items
     await tx

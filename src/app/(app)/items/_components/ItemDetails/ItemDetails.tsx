@@ -27,6 +27,7 @@ export const ItemDetails = ({ item }: ItemDetailsProps) => {
     api.items.updateInStock.useMutation({
       onSuccess: async () => {
         await utils.items.getAll.invalidate();
+        await utils.shoppingList.getAll.invalidate();
         await utils.meals.getById.invalidate();
       },
     });
