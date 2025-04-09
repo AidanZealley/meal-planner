@@ -1,13 +1,14 @@
-import { type ShoppingListItemProps } from "./ShoppingListItem.types";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
+
 import { api } from "@/trpc/react";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import { LoadingButton } from "@/components/LoadingButton";
-import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { useDebouncedCounter } from "@/app/(app)/hooks/useDebouncedCounter";
+import { Counter } from "@/app/(app)/_components/Counter";
+import { type ShoppingListItemProps } from "./ShoppingListItem.types";
 
 export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const {
@@ -21,10 +22,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const { mutateAsync: increaseQuantity, isPending: isIncreasePending } =
     api.shoppingList.increaseQuantity.useMutation({
       onSuccess: async () => {
-        await Promise.all([
-          utils.shoppingList.getAll.invalidate(),
-          utils.items.getAll.invalidate(),
-        ]);
+        await Promise.all([await utils.shoppingList.getAll.invalidate()]);
       },
       onError: (error) => {
         toast("Failed to increase amount", {
@@ -35,10 +33,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const { mutateAsync: decreaseQuantity, isPending: isDecreasePending } =
     api.shoppingList.decreaseQuantity.useMutation({
       onSuccess: async () => {
-        await Promise.all([
-          utils.shoppingList.getAll.invalidate(),
-          utils.items.getAll.invalidate(),
-        ]);
+        await Promise.all([await utils.shoppingList.getAll.invalidate()]);
       },
       onError: (error) => {
         toast("Failed to decrease amount", {
@@ -47,22 +42,22 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
       },
     });
 
-  // Calculate planned items (total needed minus unplanned)
   const plannedItems = amountNeeded - amountUnplanned;
 
-  const { debouncedValue, handleIncrement, handleDecrement } =
-    useDebouncedCounter({
-      value: amountUnplanned,
-      onIncrement: async (newValue) => {
-        const amount = newValue - amountUnplanned;
-        await increaseQuantity({ itemId, amount });
-      },
-      onDecrement: async (newValue) => {
-        const amount = amountUnplanned - newValue;
-        await decreaseQuantity({ itemId, amount });
-      },
-      minValue: Math.max(1, plannedItems),
+  const decrement = async (newValue: number) => {
+    await decreaseQuantity({
+      itemId,
+      amount: amountUnplanned - newValue,
     });
+  };
+
+  const increment = async (newValue: number) => {
+    await increaseQuantity({
+      itemId,
+      amount: newValue - amountUnplanned,
+    });
+  };
+
   const { mutate: updateItem, isPending: isUpdatePending } =
     api.shoppingList.toggleDone.useMutation({
       onSuccess: async () => {
@@ -95,7 +90,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const showQuantity = type === "amount";
 
   return (
-    <div className="grid grid-cols-[1fr_auto] items-center gap-2">
+    <div className="-ml-2 -mr-2 grid grid-cols-[1fr_auto] items-center gap-4 rounded-2xl p-2 pl-3 hover:bg-muted/50">
       <div className="grid grid-cols-[auto_1fr] items-center gap-3">
         <span className="relative grid place-items-center">
           <Checkbox
@@ -136,31 +131,16 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
         </span>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         {showQuantity && (
-          <div className="flex min-w-24 items-center justify-between gap-1 rounded-lg p-1 outline outline-secondary sm:min-w-32">
-            <LoadingButton
-              variant="ghost"
-              isLoading={isDecreasePending}
-              size="icon-xs"
-              onClick={handleDecrement}
-              disabled={
-                isDecreasePending || isIncreasePending || debouncedValue === 1
-              }
-            >
-              <Minus className="h-3 w-3" />
-            </LoadingButton>
-            <span className="px-2 text-sm">{debouncedValue}</span>
-            <LoadingButton
-              variant="ghost"
-              isLoading={isIncreasePending}
-              size="icon-xs"
-              onClick={handleIncrement}
-              disabled={isDecreasePending || isIncreasePending}
-            >
-              <Plus className="h-3 w-3" />
-            </LoadingButton>
-          </div>
+          <Counter
+            value={amountNeeded}
+            onIncrement={increment}
+            onDecrement={decrement}
+            isPendingDecrement={isDecreasePending}
+            isPendingIncrement={isIncreasePending}
+            minValue={Math.max(1, plannedItems)}
+          />
         )}
         <LoadingButton
           isLoading={isDeletePending}

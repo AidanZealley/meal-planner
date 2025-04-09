@@ -1,6 +1,7 @@
 import { type ArrayElement } from "@/lib/types";
 import { type RouterOutputs } from "@/trpc/react";
 
-export type ItemsListItemProps = {
+export type EditItemFormProps = {
   item: ArrayElement<RouterOutputs["items"]["getAll"]>;
+  onUpdate: () => void;
 };
