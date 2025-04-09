@@ -29,7 +29,7 @@ export const ShoppingList = () => {
   }
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-1">
       {shoppingList.map((item, index) => (
         <ShoppingListItem key={`${item.itemId}_${index}`} item={item} />
       ))}

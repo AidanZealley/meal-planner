@@ -15,12 +15,14 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { type DrawerDialogProps } from "./DrawerDialog.types";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 export function DrawerDialog({
   open,
   onOpenChange,
   title,
   description,
+  hideDescription,
   trigger,
   children,
 }: DrawerDialogProps) {
@@ -33,9 +35,13 @@ export function DrawerDialog({
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle>{title}</DialogTitle>
-            {description && (
-              <DialogDescription>{description}</DialogDescription>
-            )}
+            <DialogDescription>
+              {hideDescription ? (
+                <VisuallyHidden>{description}</VisuallyHidden>
+              ) : (
+                description
+              )}
+            </DialogDescription>
           </DialogHeader>
           {children}
         </DialogContent>
@@ -49,7 +55,13 @@ export function DrawerDialog({
       <DrawerContent>
         <DrawerHeader className="text-left">
           <DrawerTitle>{title}</DrawerTitle>
-          {description && <DrawerDescription>{description}</DrawerDescription>}
+          <DrawerDescription>
+            {hideDescription ? (
+              <VisuallyHidden>{description}</VisuallyHidden>
+            ) : (
+              description
+            )}
+          </DrawerDescription>
         </DrawerHeader>
         <div className="p-4 pb-6">{children}</div>
       </DrawerContent>

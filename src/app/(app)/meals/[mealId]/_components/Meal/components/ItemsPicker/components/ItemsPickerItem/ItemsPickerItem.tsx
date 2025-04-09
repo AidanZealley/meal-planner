@@ -3,6 +3,7 @@ import { api } from "@/trpc/react";
 import { Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LoadingButton } from "@/components/LoadingButton";
+import { ItemDrawer } from "@/app/(app)/items/_components/ItemDrawer";
 
 export const ItemsPickerItem = ({ item, mealId }: ItemsPickerItemProps) => {
   const { id, name, amountAvailable } = item;
@@ -29,7 +30,7 @@ export const ItemsPickerItem = ({ item, mealId }: ItemsPickerItemProps) => {
   };
 
   return (
-    <div className="grid grid-cols-[auto_1fr] items-center gap-3">
+    <div className="-mx-2 grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl p-2 hover:bg-muted/50">
       <LoadingButton
         variant="secondary"
         isLoading={isPending}
@@ -41,6 +42,7 @@ export const ItemsPickerItem = ({ item, mealId }: ItemsPickerItemProps) => {
       <span className={cn(!inStock ? "text-destructive line-through" : "")}>
         {name}
       </span>
+      <ItemDrawer item={item} />
     </div>
   );
 };

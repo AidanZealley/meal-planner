@@ -28,9 +28,9 @@ export const AdditionalItemsPicker = () => {
   };
 
   return (
-    <Command className="rounded-lg border shadow-md md:min-w-[450px]">
+    <Command className="">
       <CommandInput placeholder="Search items..." />
-      <CommandList>
+      <CommandList className="max-h-full overflow-visible">
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandGroup>
           {items.map((item) => (
