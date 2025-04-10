@@ -116,7 +116,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
               done ? "line-through opacity-30" : "",
             )}
           >
-            <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
               {name}
             </span>
           </span>

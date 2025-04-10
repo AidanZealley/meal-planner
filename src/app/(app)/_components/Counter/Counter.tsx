@@ -26,7 +26,7 @@ export const Counter = ({
   const disabled = isPendingDecrement || isPendingIncrement;
 
   return (
-    <div className="flex min-w-24 items-center justify-between gap-1 rounded-lg p-0.5 outline outline-1 outline-secondary sm:min-w-28">
+    <div className="outline-secondary flex min-w-24 items-center justify-between gap-1 rounded-lg p-0.5 outline-1 sm:min-w-28">
       <LoadingButton
         variant="ghost"
         isLoading={isPendingDecrement}
