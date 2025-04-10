@@ -1,9 +1,10 @@
-import { type ItemsPickerItemProps } from "./ItemsPickerItem.types";
-import { api } from "@/trpc/react";
 import { Plus } from "lucide-react";
+
+import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
 import { LoadingButton } from "@/components/LoadingButton";
-import { ItemDrawer } from "@/app/(app)/items/_components/ItemDrawer";
+import { ItemDrawerToggle } from "@/app/(app)/items/_components/ItemDrawerToggle";
+import { type ItemsPickerItemProps } from "./ItemsPickerItem.types";
 
 export const ItemsPickerItem = ({ item, mealId }: ItemsPickerItemProps) => {
   const { id, name, amountAvailable } = item;
@@ -30,7 +31,7 @@ export const ItemsPickerItem = ({ item, mealId }: ItemsPickerItemProps) => {
   };
 
   return (
-    <div className="-mx-2 grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl p-2 hover:bg-muted/50">
+    <div className="hover:bg-muted/50 -mx-2 grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl p-2">
       <LoadingButton
         variant="secondary"
         isLoading={isPending}
@@ -42,7 +43,7 @@ export const ItemsPickerItem = ({ item, mealId }: ItemsPickerItemProps) => {
       <span className={cn(!inStock ? "text-destructive line-through" : "")}>
         {name}
       </span>
-      <ItemDrawer item={item} />
+      <ItemDrawerToggle item={item} />
     </div>
   );
 };

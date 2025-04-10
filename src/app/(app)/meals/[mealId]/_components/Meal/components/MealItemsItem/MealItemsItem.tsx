@@ -3,8 +3,8 @@ import { Minus } from "lucide-react";
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
 import { LoadingButton } from "@/components/LoadingButton";
-import { ItemDrawer } from "@/app/(app)/items/_components/ItemDrawer";
 import { Counter } from "@/app/(app)/_components/Counter";
+import { ItemDrawerToggle } from "@/app/(app)/items/_components/ItemDrawerToggle";
 import { type MealItemsItemProps } from "./MealItemsItem.types";
 
 export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
@@ -69,7 +69,7 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
 
   return (
     <>
-      <div className="-mx-2 grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl p-2 hover:bg-muted/50">
+      <div className="hover:bg-muted/50 -mx-2 grid grid-cols-[auto_1fr_auto] items-center gap-4 rounded-2xl p-2">
         <LoadingButton
           variant="secondary"
           isLoading={isPendingDeletemealItem}
@@ -92,7 +92,7 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
               minValue={1}
             />
           )}
-          <ItemDrawer item={item} />
+          <ItemDrawerToggle item={item} />
         </div>
       </div>
     </>

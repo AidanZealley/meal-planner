@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MoreVertical, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 import { api } from "@/trpc/react";
 import { DrawerDialog } from "@/components/DrawerDialog";
@@ -13,8 +13,12 @@ import { LoadingButton } from "@/components/LoadingButton";
 import type { ItemDrawerProps } from "./ItemDrawer.types";
 import { Separator } from "@/components/ui/separator";
 
-export const ItemDrawer = ({ item }: ItemDrawerProps) => {
-  const [showDetails, setShowDetails] = useState(false);
+export const ItemDrawer = ({
+  item,
+  open,
+  onOpenChange,
+  trigger,
+}: ItemDrawerProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const utils = api.useUtils();
@@ -27,26 +31,18 @@ export const ItemDrawer = ({ item }: ItemDrawerProps) => {
           await utils.shoppingList.getAll.invalidate(),
           await utils.meals.getAll.invalidate(),
         ]);
-        setShowDetails(false);
+        onOpenChange(false);
       },
     });
 
   return (
     <DrawerDialog
-      open={showDetails}
-      onOpenChange={setShowDetails}
+      open={open}
+      onOpenChange={onOpenChange}
       title="Manage Item"
       description="Manage item"
       hideDescription={true}
-      trigger={
-        <Button
-          onClick={() => setShowDetails(true)}
-          size="icon-sm"
-          variant="ghost"
-        >
-          <MoreVertical className="h-4 w-4" />
-        </Button>
-      }
+      trigger={trigger}
     >
       <div className="grid gap-6">
         <div className="grid gap-3">
@@ -66,7 +62,7 @@ export const ItemDrawer = ({ item }: ItemDrawerProps) => {
 
         <Separator className="max-w-1/2 justify-self-center" />
 
-        <Button onClick={() => setShowDetails(false)} variant="outline">
+        <Button onClick={() => onOpenChange(false)} variant="outline">
           Close
         </Button>
       </div>
