@@ -7,7 +7,8 @@ export const auth = betterAuth({
     provider: "pg",
   }),
   trustedOrigins: [
-    process.env.VERCEL_URL ?? `http://localhost:${process.env.PORT ?? 3000}`,
+    process.env.VERCEL_URL!,
+    `http://localhost:${process.env.PORT ?? 3000}`,
   ],
   emailAndPassword: {
     enabled: true,
