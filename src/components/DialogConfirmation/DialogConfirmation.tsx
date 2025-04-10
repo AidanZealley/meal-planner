@@ -22,7 +22,7 @@ export const DialogConfirmation = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className={cn(
-            "absolute inset-0 grid place-items-center rounded-xl bg-background/85 px-6 py-12 backdrop-blur-sm",
+            "absolute inset-0 grid place-items-center rounded-xl bg-background/85 px-6 py-12 backdrop-blur-xs",
             isDesktop ? "" : "place-items-end justify-center",
           )}
         >

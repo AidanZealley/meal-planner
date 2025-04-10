@@ -20,7 +20,7 @@ export const ItemsListItem = ({ item }: ItemsListItemProps) => {
               "grid max-w-full grid-cols-[auto_1fr] items-center gap-3 transition-opacity",
             )}
           >
-            <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+            <span className="overflow-hidden text-ellipsis whitespace-nowrap">
               {name}
             </span>
             <div className="flex items-center gap-2">

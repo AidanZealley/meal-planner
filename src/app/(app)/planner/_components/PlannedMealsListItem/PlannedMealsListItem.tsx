@@ -76,7 +76,7 @@ export const PlannedMealsListItem = ({
           statusPickerOpen ? "bg-muted" : "",
         )}
       >
-        <span className="group-hover:overflow-hidden group-hover:overflow-ellipsis group-hover:whitespace-nowrap">
+        <span className="group-hover:overflow-hidden group-hover:text-ellipsis group-hover:whitespace-nowrap">
           {name}
         </span>
         <Link href={`/meals/${mealId}`} className="absolute inset-0" />

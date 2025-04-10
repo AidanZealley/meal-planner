@@ -1,4 +1,4 @@
 export type StockDialogScrollIndicatorProps = {
-  scrollingContainer: React.RefObject<HTMLDivElement>;
-  itemsContainer: React.RefObject<HTMLDivElement>;
+  scrollingContainer: React.RefObject<HTMLDivElement | null>;
+  itemsContainer: React.RefObject<HTMLDivElement | null>;
 };

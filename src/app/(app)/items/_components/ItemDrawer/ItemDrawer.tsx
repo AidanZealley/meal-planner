@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { DialogConfirmation } from "@/components/DialogConfirmation";
 import { LoadingButton } from "@/components/LoadingButton";
 import type { ItemDrawerProps } from "./ItemDrawer.types";
+import { Separator } from "@/components/ui/separator";
 
 export const ItemDrawer = ({ item }: ItemDrawerProps) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -62,6 +63,8 @@ export const ItemDrawer = ({ item }: ItemDrawerProps) => {
             Delete
           </span>
         </Button>
+
+        <Separator className="max-w-1/2 justify-self-center" />
 
         <Button onClick={() => setShowDetails(false)} variant="outline">
           Close

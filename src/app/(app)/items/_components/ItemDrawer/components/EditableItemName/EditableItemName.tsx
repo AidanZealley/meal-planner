@@ -19,7 +19,7 @@ export const EditableItemName = ({ item }: EditableItemNameProps) => {
       {isEditing ? (
         <EditItemForm item={item} onUpdate={toggleEdit} />
       ) : (
-        <span className="overflow-hidden overflow-ellipsis whitespace-nowrap">
+        <span className="overflow-hidden text-ellipsis whitespace-nowrap">
           {name}
         </span>
       )}

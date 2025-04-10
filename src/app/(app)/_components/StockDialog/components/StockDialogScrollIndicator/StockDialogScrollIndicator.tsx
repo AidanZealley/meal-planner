@@ -60,7 +60,7 @@ export const StockDialogScrollIndicator = ({
   return (
     <div
       className={cn(
-        "sticky bottom-3 left-0 flex items-center gap-1 justify-self-center rounded-full bg-foreground px-4 py-2 text-center text-xs text-background opacity-50 backdrop-blur-sm transition-opacity",
+        "sticky bottom-3 left-0 flex items-center gap-1 justify-self-center rounded-full bg-foreground px-4 py-2 text-center text-xs text-background opacity-50 backdrop-blur-xs transition-opacity",
         canScroll ? "opacity-50" : "opacity-0",
         canScroll && isAtTop ? "opacity-100" : "",
         isAtBottom ? "opacity-0" : "",

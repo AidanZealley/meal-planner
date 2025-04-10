@@ -46,7 +46,7 @@ export const NewItem = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-[1fr_auto] items-end gap-3"
+        className="grid grid-cols-[1fr_auto] items-end items-start gap-3"
       >
         <FormField
           control={form.control}
