@@ -50,6 +50,7 @@ export const SignInForm = () => {
         },
         onError: (ctx) => {
           alert(ctx.error.message);
+          setIsLoading(false);
         },
       },
     );
