@@ -10,10 +10,18 @@ import { stockCheckFormSchema } from "@/app/(app)/_components/StockDialog/StockD
 
 export const itemsRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(z.object({ name: z.string() }))
+    .input(
+      z.object({
+        name: z.string().min(1).max(255),
+        type: z.enum(ItemTypeValues),
+        amountAvailable: z.number(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       await ctx.db.insert(items).values({
         name: input.name,
+        type: input.type,
+        amountAvailable: input.amountAvailable,
         userId: ctx.session.user.id,
       });
     }),

@@ -7,7 +7,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Spinner } from "@/components/Spinner";
 import { Badge } from "@/components/ui/badge";
-import { Counter } from "@/app/(app)/_components/Counter";
+import { DebouncedCounter } from "@/app/(app)/_components/DebouncedCounter";
 import { type ShoppingListItemProps } from "./ShoppingListItem.types";
 
 export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
@@ -90,7 +90,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
   const showQuantity = type === "amount";
 
   return (
-    <div className="-ml-2 -mr-2 grid grid-cols-[1fr_auto] items-center gap-4 rounded-2xl p-2 pl-3 hover:bg-muted/50">
+    <div className="hover:bg-muted/50 -mr-2 -ml-2 grid grid-cols-[1fr_auto] items-center gap-4 rounded-2xl p-2 pl-3">
       <div className="grid grid-cols-[auto_1fr] items-center gap-3">
         <span className="relative grid place-items-center">
           <Checkbox
@@ -103,7 +103,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
           />
 
           {isUpdatePending && (
-            <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <Spinner className="h-4 w-4" />
             </span>
           )}
@@ -133,7 +133,7 @@ export const ShoppingListItem = ({ item }: ShoppingListItemProps) => {
 
       <div className="flex items-center gap-3">
         {showQuantity && (
-          <Counter
+          <DebouncedCounter
             value={amountNeeded}
             onIncrement={increment}
             onDecrement={decrement}

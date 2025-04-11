@@ -3,8 +3,8 @@ import { Minus } from "lucide-react";
 import { api } from "@/trpc/react";
 import { cn } from "@/lib/utils";
 import { LoadingButton } from "@/components/LoadingButton";
-import { Counter } from "@/app/(app)/_components/Counter";
 import { ItemDrawerToggle } from "@/app/(app)/items/_components/ItemDrawerToggle";
+import { DebouncedCounter } from "@/app/(app)/_components/DebouncedCounter";
 import { type MealItemsItemProps } from "./MealItemsItem.types";
 
 export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
@@ -83,7 +83,7 @@ export const MealItemsItem = ({ mealItem }: MealItemsItemProps) => {
         </span>
         <div className="flex items-center gap-3">
           {useAmount && (
-            <Counter
+            <DebouncedCounter
               value={amountRequired}
               onIncrement={increment}
               onDecrement={decrement}
