@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Check, Plus, X } from "lucide-react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
