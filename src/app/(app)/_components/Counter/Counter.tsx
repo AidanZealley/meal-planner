@@ -1,51 +1,39 @@
 import { Minus, Plus } from "lucide-react";
-import { LoadingButton } from "@/components/LoadingButton";
-import { useDebouncedCounter } from "../../hooks/useDebouncedCounter";
+
+import { Button } from "@/components/ui/button";
 import type { CounterProps } from "./Counter.types";
 
 export const Counter = ({
   value,
-  onIncrement,
   onDecrement,
-  isPendingDecrement,
-  isPendingIncrement,
-  minValue,
+  onIncrement,
+  minValue = Infinity,
+  maxValue = Infinity,
 }: CounterProps) => {
-  const { debouncedValue, handleIncrement, handleDecrement } =
-    useDebouncedCounter({
-      value,
-      onIncrement: async (newValue) => {
-        await onIncrement(newValue);
-      },
-      onDecrement: async (newValue) => {
-        await onDecrement(newValue);
-      },
-      minValue,
-    });
-
-  const disabled = isPendingDecrement || isPendingIncrement;
+  const handleDecrement = () => onDecrement(Math.max(minValue, value - 1));
+  const handleIncrement = () => onIncrement(Math.min(maxValue, value + 1));
 
   return (
     <div className="outline-secondary flex min-w-24 items-center justify-between gap-1 rounded-lg p-0.5 outline-1 sm:min-w-28">
-      <LoadingButton
+      <Button
         variant="ghost"
-        isLoading={isPendingDecrement}
         size="icon-xs"
         onClick={handleDecrement}
-        disabled={disabled || debouncedValue === minValue}
+        disabled={value === minValue}
+        type="button"
       >
         <Minus className="h-3 w-3" />
-      </LoadingButton>
-      <span className="px-2 text-sm">{debouncedValue}</span>
-      <LoadingButton
+      </Button>
+      <span className="px-2 text-sm">{value}</span>
+      <Button
         variant="ghost"
-        isLoading={isPendingIncrement}
         size="icon-xs"
         onClick={handleIncrement}
-        disabled={disabled}
+        disabled={value === maxValue}
+        type="button"
       >
         <Plus className="h-3 w-3" />
-      </LoadingButton>
+      </Button>
     </div>
   );
 };

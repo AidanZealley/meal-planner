@@ -10,8 +10,8 @@ import { ItemStockControl } from "./components/ItemStockControl";
 import { Button } from "@/components/ui/button";
 import { DialogConfirmation } from "@/components/DialogConfirmation";
 import { LoadingButton } from "@/components/LoadingButton";
-import type { ItemDrawerProps } from "./ItemDrawer.types";
 import { Separator } from "@/components/ui/separator";
+import type { ItemDrawerProps } from "./ItemDrawer.types";
 
 export const ItemDrawer = ({
   item,
