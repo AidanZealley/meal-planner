@@ -22,7 +22,7 @@ export const DialogConfirmation = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           className={cn(
-            "absolute inset-0 grid place-items-center rounded-xl bg-background/85 px-6 py-12 backdrop-blur-xs",
+            "bg-background/85 absolute inset-0 grid place-items-center rounded-xl px-6 py-12 backdrop-blur-xs",
             isDesktop ? "" : "place-items-end justify-center",
           )}
         >
@@ -43,7 +43,11 @@ export const DialogConfirmation = ({
                 isDesktop ? "" : "grid justify-normal",
               )}
             >
-              <Button onClick={() => onOpenChange(false)} variant="outline">
+              <Button
+                onClick={() => onOpenChange(false)}
+                variant="outline"
+                className={cn(isDesktop ? "" : "order-1")}
+              >
                 Cancel
               </Button>
               {action}

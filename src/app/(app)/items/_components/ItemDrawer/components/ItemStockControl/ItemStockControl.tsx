@@ -1,11 +1,9 @@
-import { Check, X } from "lucide-react";
-
 import { api } from "@/trpc/react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
-import { LoadingButton } from "@/components/LoadingButton";
 import { Spinner } from "@/components/Spinner";
 import { ItemAmountAvailable } from "../ItemAmountAvailable";
+import { InStockToggle } from "../../../InStockToggle";
 import type { ItemStockControlProps } from "./ItemStockControl.types";
 
 export const ItemStockControl = ({ item }: ItemStockControlProps) => {
@@ -42,6 +40,10 @@ export const ItemStockControl = ({ item }: ItemStockControlProps) => {
     });
   };
 
+  const handleUpdateInStock = (inStock: boolean) => {
+    updateInStock({ id, inStock });
+  };
+
   return (
     <div className="flex items-center justify-between gap-3">
       <div className="flex items-center gap-2">
@@ -61,21 +63,11 @@ export const ItemStockControl = ({ item }: ItemStockControlProps) => {
       {type === "amount" ? (
         <ItemAmountAvailable item={item} />
       ) : (
-        <LoadingButton
-          variant="secondary"
-          isLoading={isUpdatingInStock}
-          onClick={() => updateInStock({ id, inStock: !inStock })}
-          className="group"
-        >
-          <span className="flex items-center gap-2">
-            {inStock ? (
-              <X className="h-4 w-4 transition-colors group-hover:text-red-500" />
-            ) : (
-              <Check className="h-4 w-4 transition-colors group-hover:text-green-500" />
-            )}
-            {inStock ? "Out of Stock" : "In Stock"}
-          </span>
-        </LoadingButton>
+        <InStockToggle
+          inStock={inStock}
+          loading={isUpdatingInStock}
+          onInStockChange={handleUpdateInStock}
+        />
       )}
     </div>
   );

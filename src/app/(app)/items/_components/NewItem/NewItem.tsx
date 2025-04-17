@@ -1,9 +1,11 @@
 "use client";
 
-import { api } from "@/trpc/react";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch, type ControllerRenderProps } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Plus } from "lucide-react";
+
+import { api } from "@/trpc/react";
 import {
   Form,
   FormControl,
@@ -13,12 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Check, Plus, X } from "lucide-react";
-import { LoadingButton } from "@/components/LoadingButton";
 import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
+import { LoadingButton } from "@/components/LoadingButton";
 import { Counter } from "@/app/(app)/_components/Counter";
-import { cn } from "@/lib/utils";
+import { InStockToggle } from "../InStockToggle";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -133,48 +133,10 @@ export const NewItem = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Button
-                      variant="secondary"
-                      onClick={() => handleInStockChange(field)}
-                      className="group pl-1.5"
-                      type="button"
-                    >
-                      <span className="grid w-full grid-cols-[auto_1fr] items-center gap-3">
-                        <span
-                          className={cn(
-                            "grid h-5 w-5 place-items-center rounded-full transition-colors",
-                            amountAvailable > 0
-                              ? "bg-foreground"
-                              : "bg-foreground/10 group-hover:bg-foreground/20",
-                          )}
-                        >
-                          <Check
-                            className={cn(
-                              "col-start-1 row-start-1 h-2 w-2 text-green-400 opacity-100 transition-opacity",
-                              amountAvailable > 0
-                                ? "group-hpver:hidden inline"
-                                : "hidden group-hover:inline",
-                            )}
-                          />
-                          <X
-                            className={cn(
-                              "col-start-1 row-start-1 h-2 w-2 text-red-400 opacity-100 transition-opacity",
-                              amountAvailable > 0
-                                ? "hidden"
-                                : "inline group-hover:hidden",
-                            )}
-                          />
-                        </span>
-                        <span
-                          className={cn(
-                            "text-left",
-                            amountAvailable > 0 ? "" : "line-through",
-                          )}
-                        >
-                          In Stock
-                        </span>
-                      </span>
-                    </Button>
+                    <InStockToggle
+                      inStock={field.value > 0}
+                      onInStockChange={() => handleInStockChange(field)}
+                    />
                   </FormControl>
                 </FormItem>
               )}
