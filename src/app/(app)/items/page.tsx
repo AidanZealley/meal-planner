@@ -1,6 +1,11 @@
 import { api, HydrateClient } from "@/trpc/server";
 import { ItemsList } from "./_components/ItemsList";
 import { NewItem } from "./_components/NewItem";
+<<<<<<< HEAD
+=======
+import { NewItemButton } from "./_components/NewItemButton";
+import { TestDrawer } from "@/components/TestDrawer";
+>>>>>>> d803d8d (Test example dialog to see if bug still occurs)
 
 export default async function ItemsPage() {
   void api.items.getAll.prefetch();
@@ -13,6 +18,10 @@ export default async function ItemsPage() {
           <NewItem />
         </div>
         <ItemsList />
+<<<<<<< HEAD
+=======
+        <TestDrawer />
+>>>>>>> d803d8d (Test example dialog to see if bug still occurs)
       </main>
     </HydrateClient>
   );
