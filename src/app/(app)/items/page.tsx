@@ -2,6 +2,7 @@ import { api, HydrateClient } from "@/trpc/server";
 import { ItemsList } from "./_components/ItemsList";
 import { NewItem } from "./_components/NewItem";
 import { NewItemButton } from "./_components/NewItemButton";
+import { TestDrawer } from "@/components/TestDrawer";
 
 export default async function ItemsPage() {
   void api.items.getAll.prefetch();
@@ -14,7 +15,7 @@ export default async function ItemsPage() {
           <NewItem />
         </div>
         <ItemsList />
-        <NewItemButton />
+        <TestDrawer />
       </main>
     </HydrateClient>
   );

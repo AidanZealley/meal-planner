@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "../ui/button";
 import type { DialogConfirmationProps } from "./DialogConfirmation.types";
 import { cn } from "@/lib/utils";
