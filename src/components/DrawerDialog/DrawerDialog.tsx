@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -12,6 +13,7 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
+  DrawerPortal,
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { type DrawerDialogProps } from "./DrawerDialog.types";
@@ -32,19 +34,21 @@ export function DrawerDialog({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         {trigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>
-              {hideDescription ? (
-                <VisuallyHidden>{description}</VisuallyHidden>
-              ) : (
-                description
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          {children}
-        </DialogContent>
+        <DialogPortal>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>{title}</DialogTitle>
+              <DialogDescription>
+                {hideDescription ? (
+                  <VisuallyHidden>{description}</VisuallyHidden>
+                ) : (
+                  description
+                )}
+              </DialogDescription>
+            </DialogHeader>
+            {children}
+          </DialogContent>
+        </DialogPortal>
       </Dialog>
     );
   }
@@ -52,19 +56,21 @@ export function DrawerDialog({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       {trigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription>
-            {hideDescription ? (
-              <VisuallyHidden>{description}</VisuallyHidden>
-            ) : (
-              description
-            )}
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="p-4 pb-6">{children}</div>
-      </DrawerContent>
+      <DrawerPortal>
+        <DrawerContent>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerDescription>
+              {hideDescription ? (
+                <VisuallyHidden>{description}</VisuallyHidden>
+              ) : (
+                description
+              )}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="p-4 pb-6">{children}</div>
+        </DrawerContent>
+      </DrawerPortal>
     </Drawer>
   );
 }
