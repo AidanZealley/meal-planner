@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NewItem } from "@/app/(app)/items/_components/NewItem";
 
 export function TestDrawer() {
   const [open, setOpen] = React.useState(false);
@@ -44,7 +45,7 @@ export function TestDrawer() {
               done.
             </DialogDescription>
           </DialogHeader>
-          <ProfileForm />
+          <NewItem />
         </DialogContent>
       </Dialog>
     );
@@ -62,7 +63,7 @@ export function TestDrawer() {
             Make changes to your profile here. Click save when you&apos;re done.
           </DrawerDescription>
         </DrawerHeader>
-        <ProfileForm className="px-4" />
+        <NewItem />
         <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
@@ -70,21 +71,5 @@ export function TestDrawer() {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
-}
-
-function ProfileForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-4", className)}>
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
-      </div>
-      <Button type="submit">Save changes</Button>
-    </form>
   );
 }
