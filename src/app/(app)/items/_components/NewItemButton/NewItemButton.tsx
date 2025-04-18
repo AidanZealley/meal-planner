@@ -13,7 +13,7 @@ export const NewItemButton = () => {
   };
 
   return (
-    <div className="sticky right-6 bottom-6 justify-self-end">
+    <div className="fixed right-6 bottom-6 justify-self-end">
       <NewItemDrawer
         open={open}
         onOpenChange={setOpen}
