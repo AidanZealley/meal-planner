@@ -16,8 +16,8 @@ import {
   DrawerPortal,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { type DrawerDialogProps } from "./DrawerDialog.types";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { type DrawerDialogProps } from "./DrawerDialog.types";
 
 export function DrawerDialog({
   open,

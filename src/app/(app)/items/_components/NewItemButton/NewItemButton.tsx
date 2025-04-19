@@ -1,9 +1,10 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { NewItemDrawer } from "../NewItemDrawer";
 import { useState } from "react";
 import { Plus } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { NewItemDrawer } from "../NewItemDrawer";
 
 export const NewItemButton = () => {
   const [open, setOpen] = useState(false);
