@@ -99,10 +99,11 @@ export const NewItem = () => {
                 <FormControl>
                   <div className="flex items-center gap-2">
                     <Switch
+                      id="useAmount"
                       checked={field.value}
                       onCheckedChange={field.onChange}
                     />
-                    <FormLabel>Use Amount</FormLabel>
+                    <FormLabel htmlFor="useAmount">Use Amount</FormLabel>
                   </div>
                 </FormControl>
               </FormItem>
