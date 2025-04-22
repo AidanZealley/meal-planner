@@ -34,7 +34,7 @@ export function DrawerDialog({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         {trigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
-        <DialogPortal>
+        <DialogPortal container={document.body}>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
@@ -56,7 +56,7 @@ export function DrawerDialog({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       {trigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DrawerPortal>
+      <DrawerPortal container={document.body}>
         <DrawerContent>
           <DrawerHeader className="text-left">
             <DrawerTitle>{title}</DrawerTitle>
