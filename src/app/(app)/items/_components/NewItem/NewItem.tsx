@@ -3,7 +3,7 @@
 import { useForm, useWatch, type ControllerRenderProps } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Plus } from "lucide-react";
+import { Plus, Undo } from "lucide-react";
 
 import { api } from "@/trpc/react";
 import {
@@ -19,6 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Counter } from "@/app/(app)/_components/Counter";
 import { InStockToggle } from "../InStockToggle";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -46,7 +47,11 @@ export const NewItem = () => {
     reValidateMode: "onSubmit",
   });
 
-  const { control } = form;
+  const {
+    control,
+    formState: { isDirty },
+    reset,
+  } = form;
 
   const useAmount = useWatch({
     control,
@@ -144,12 +149,25 @@ export const NewItem = () => {
             />
           )}
         </div>
-        <LoadingButton isLoading={isPending} type="submit">
-          <span className="flex items-center gap-2">
-            <Plus />
-            Add Item
-          </span>
-        </LoadingButton>
+        <div className="flex items-center gap-3">
+          <Button
+            onClick={() => reset()}
+            variant="outline"
+            disabled={!isDirty}
+            className="flex-1"
+          >
+            <span className="flex items-center gap-2">
+              <Undo className="h-4 w-4" />
+              Reset
+            </span>
+          </Button>
+          <LoadingButton isLoading={isPending} type="submit" className="flex-1">
+            <span className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              Add Item
+            </span>
+          </LoadingButton>
+        </div>
       </form>
     </Form>
   );
