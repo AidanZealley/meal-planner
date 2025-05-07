@@ -3,10 +3,10 @@
 import { useState } from "react";
 
 import { api } from "@/trpc/react";
-import { StockDialog } from "@/app/(app)/_components/StockDialog";
+import { StockCheckDrawer } from "@/app/(app)/_components/StockCheckDrawer";
 import { PlannedMealsListItem } from "../PlannedMealsListItem";
 import type { PlannedMealsListProps } from "./PlannedMealsList.types";
-import type { StockItem } from "@/app/(app)/_components/StockDialog/StockDialog.types";
+import type { StockItem } from "@/app/(app)/_components/StockCheckDrawer/StockCheckDrawer.types";
 
 export const PlannedMealsList = ({ status }: PlannedMealsListProps) => {
   const [plannedMeals] = api.plannedMeals.getAllByStatus.useSuspenseQuery({
@@ -27,7 +27,7 @@ export const PlannedMealsList = ({ status }: PlannedMealsListProps) => {
 
   return (
     <>
-      <div className="grid gap-1 pl-3 pr-5">
+      <div className="grid gap-1 pr-5 pl-3">
         {plannedMeals.map((plannedMeal) => (
           <PlannedMealsListItem
             key={plannedMeal.id}
@@ -37,7 +37,11 @@ export const PlannedMealsList = ({ status }: PlannedMealsListProps) => {
         ))}
       </div>
 
-      <StockDialog open={open} onOpenChange={setOpen} items={cookedMealItems} />
+      <StockCheckDrawer
+        open={open}
+        onOpenChange={setOpen}
+        items={cookedMealItems}
+      />
     </>
   );
 };

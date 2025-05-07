@@ -3,9 +3,12 @@ import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FormControl } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { type StockItemFieldProps } from "./StockItemField.types";
+import { type StockCheckItemFieldProps } from "./StockCheckItemField.types";
 
-export const StockItemField = ({ item, field }: StockItemFieldProps) => {
+export const StockCheckItemField = ({
+  item,
+  field,
+}: StockCheckItemFieldProps) => {
   const checked = field.value?.includes(item.itemId);
 
   const handleCheckedChange = (checked: boolean) => {
@@ -24,7 +27,7 @@ export const StockItemField = ({ item, field }: StockItemFieldProps) => {
         className={cn(
           "group pl-2",
           checked
-            ? "border-transparent bg-secondary/60 hover:bg-secondary/75"
+            ? "bg-secondary/60 hover:bg-secondary/75 border-transparent"
             : "",
         )}
         type="button"

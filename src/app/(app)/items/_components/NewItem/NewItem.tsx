@@ -20,6 +20,7 @@ import { LoadingButton } from "@/components/LoadingButton";
 import { Counter } from "@/app/(app)/_components/Counter";
 import { InStockToggle } from "../InStockToggle";
 import { Button } from "@/components/ui/button";
+import type { NewItemProps } from "./NewItem.types";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
@@ -27,13 +28,14 @@ const formSchema = z.object({
   amountAvailable: z.number(),
 });
 
-export const NewItem = () => {
+export const NewItem = ({ onSuccess }: NewItemProps) => {
   const utils = api.useUtils();
 
   const { mutate, isPending } = api.items.create.useMutation({
     onSuccess: async () => {
       await utils.items.getAll.invalidate();
       form.reset();
+      onSuccess?.();
     },
   });
 
@@ -151,6 +153,7 @@ export const NewItem = () => {
         </div>
         <div className="flex items-center gap-3">
           <Button
+            type="button"
             onClick={() => reset()}
             variant="outline"
             disabled={!isDirty}

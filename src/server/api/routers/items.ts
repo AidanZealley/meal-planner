@@ -6,7 +6,7 @@ import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { items } from "@/server/db/schema";
 import { generateShoppingList } from "../utils/shoppingList";
 import { ItemTypeValues } from "@/lib/enums";
-import { stockCheckFormSchema } from "@/app/(app)/_components/StockDialog/StockDialog.schemas";
+import { stockCheckFormSchema } from "@/app/(app)/_components/StockCheckDrawer/components/StockCheckForm/StockCheckForm.schemas";
 
 export const itemsRouter = createTRPCRouter({
   create: protectedProcedure
