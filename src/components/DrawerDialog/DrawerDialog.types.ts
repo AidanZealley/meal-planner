@@ -9,5 +9,4 @@ export type DrawerDialogProps = PropsWithChildren &
     description: string;
     hideDescription?: boolean;
     trigger?: React.ReactNode;
-    // container?: RefObject<HTMLDivElement | null>;
   };

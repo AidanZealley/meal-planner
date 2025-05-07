@@ -82,25 +82,4 @@ export const NewItemDrawer = ({
       </DrawerContent>
     </Drawer>
   );
-  // return (
-  //   <DrawerDialog
-  //     open={open}
-  //     onOpenChange={onOpenChange}
-  //     title="New Item"
-  //     description="Add a new item"
-  //     hideDescription={true}
-  //     trigger={trigger}
-  //     // container={container}
-  //   >
-  //     <div className="grid gap-6">
-  //       <NewItem />
-
-  //       <Separator className="max-w-1/2 justify-self-center" />
-
-  //       <Button onClick={() => onOpenChange(false)} variant="outline">
-  //         Close
-  //       </Button>
-  //     </div>
-  //   </DrawerDialog>
-  // );
 };

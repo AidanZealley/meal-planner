@@ -28,7 +28,6 @@ export function DrawerDialog({
   description,
   hideDescription,
   trigger,
-  // container,
   children,
 }: DrawerDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
