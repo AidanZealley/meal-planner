@@ -65,7 +65,7 @@ export const NewItemDrawer = ({
             <DrawerDescription>Add a new item</DrawerDescription>
           </VisuallyHidden>
         </DrawerHeader>
-        <div className="grid gap-6">
+        <div className="grid gap-6 p-6">
           <NewItem />
 
           <Separator className="max-w-1/2 justify-self-center" />
