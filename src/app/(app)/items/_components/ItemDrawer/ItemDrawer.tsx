@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/drawer";
 import { ItemDetails } from "./components/ItemDetails";
 import type { ItemDrawerProps } from "./ItemDrawer.types";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 export const ItemDrawer = ({
   item,
@@ -43,6 +45,12 @@ export const ItemDrawer = ({
           </DialogHeader>
           <div className="grid gap-6">
             <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+
+            <Separator className="max-w-1/2 justify-self-center" />
+
+            <Button onClick={() => onOpenChange(false)} variant="outline">
+              Close
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
@@ -61,6 +69,12 @@ export const ItemDrawer = ({
         </DrawerHeader>
         <div className="grid gap-6 p-6">
           <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+
+          <Separator className="max-w-1/2 justify-self-center" />
+
+          <Button onClick={() => onOpenChange(false)} variant="outline">
+            Close
+          </Button>
         </div>
       </DrawerContent>
     </Drawer>

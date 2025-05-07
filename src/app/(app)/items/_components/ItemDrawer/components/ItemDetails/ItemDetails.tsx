@@ -9,7 +9,6 @@ import { ItemStockControl } from "../ItemStockControl";
 import { Button } from "@/components/ui/button";
 import { DialogConfirmation } from "@/components/DialogConfirmation";
 import { LoadingButton } from "@/components/LoadingButton";
-import { Separator } from "@/components/ui/separator";
 import type { ItemDetailsProps } from "./ItemDetails.types";
 
 export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
@@ -25,13 +24,9 @@ export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
           await utils.shoppingList.getAll.invalidate(),
           await utils.meals.getAll.invalidate(),
         ]);
-        handleClose();
+        onClose?.();
       },
     });
-
-  const handleClose = () => {
-    onClose?.();
-  };
 
   return (
     <>
@@ -49,12 +44,6 @@ export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
             <Trash2 className="h-4 w-4" />
             Delete
           </span>
-        </Button>
-
-        <Separator className="max-w-1/2 justify-self-center" />
-
-        <Button onClick={handleClose} variant="outline">
-          Close
         </Button>
       </div>
 
