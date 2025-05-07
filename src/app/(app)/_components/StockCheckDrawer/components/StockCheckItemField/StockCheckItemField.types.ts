@@ -1,7 +1,7 @@
 import { type ControllerRenderProps } from "react-hook-form";
-import { type StockItem } from "@/app/(app)/_components/StockDialog/StockDialog.types";
+import { type StockItem } from "@/app/(app)/_components/StockCheckDrawer/StockCheckDrawer.types";
 
-export type StockItemFieldProps = {
+export type StockCheckItemFieldProps = {
   item: StockItem;
   field: ControllerRenderProps<
     {

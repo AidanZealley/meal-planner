@@ -8,10 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
@@ -42,7 +40,7 @@ export const NewItemDrawer = ({
             </VisuallyHidden>
           </DialogHeader>
           <div className="grid gap-6">
-            <NewItem />
+            <NewItem onSuccess={() => onOpenChange(false)} />
 
             <Separator className="max-w-1/2 justify-self-center" />
 
@@ -66,7 +64,7 @@ export const NewItemDrawer = ({
           </VisuallyHidden>
         </DrawerHeader>
         <div className="grid gap-6 p-6">
-          <NewItem />
+          <NewItem onSuccess={() => onOpenChange(false)} />
 
           <Separator className="max-w-1/2 justify-self-center" />
 
