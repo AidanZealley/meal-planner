@@ -1,3 +1,5 @@
+"use client";
+
 import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Dialog,
@@ -26,6 +28,7 @@ export function DrawerDialog({
   description,
   hideDescription,
   trigger,
+  // container,
   children,
 }: DrawerDialogProps) {
   const isDesktop = useMediaQuery("(min-width: 768px)");
@@ -34,7 +37,7 @@ export function DrawerDialog({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         {trigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
-        <DialogPortal container={document.body}>
+        <DialogPortal>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader>
               <DialogTitle>{title}</DialogTitle>
@@ -56,7 +59,7 @@ export function DrawerDialog({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       {trigger ?? <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DrawerPortal container={document.body}>
+      <DrawerPortal>
         <DrawerContent>
           <DrawerHeader className="text-left">
             <DrawerTitle>{title}</DrawerTitle>

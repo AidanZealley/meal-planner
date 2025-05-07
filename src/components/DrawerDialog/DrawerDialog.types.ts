@@ -1,5 +1,5 @@
 import type { DialogProps } from "@radix-ui/react-dialog";
-import { type PropsWithChildren } from "react";
+import { type PropsWithChildren, type RefObject } from "react";
 
 export type DrawerDialogProps = PropsWithChildren &
   DialogProps & {
@@ -9,4 +9,5 @@ export type DrawerDialogProps = PropsWithChildren &
     description: string;
     hideDescription?: boolean;
     trigger?: React.ReactNode;
+    // container?: RefObject<HTMLDivElement | null>;
   };
