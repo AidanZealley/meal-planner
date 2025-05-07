@@ -27,7 +27,6 @@ export const NewItemDrawer = ({
   open,
   onOpenChange,
   trigger,
-  container,
 }: NewItemDrawerProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 

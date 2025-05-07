@@ -1,5 +1,5 @@
 import type { DialogProps } from "@radix-ui/react-dialog";
-import { type PropsWithChildren, type RefObject } from "react";
+import { type PropsWithChildren } from "react";
 
 export type DrawerDialogProps = PropsWithChildren &
   DialogProps & {
