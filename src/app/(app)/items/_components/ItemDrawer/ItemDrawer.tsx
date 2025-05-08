@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -17,7 +16,6 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
-  DrawerPortal,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
@@ -42,25 +40,23 @@ export const ItemDrawer = ({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogPortal>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Manage Item</DialogTitle>
-              <VisuallyHidden>
-                <DialogDescription>Manage item</DialogDescription>
-              </VisuallyHidden>
-            </DialogHeader>
-            <div className="grid gap-6">
-              <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Manage Item</DialogTitle>
+            <VisuallyHidden>
+              <DialogDescription>Manage item</DialogDescription>
+            </VisuallyHidden>
+          </DialogHeader>
+          <div className="grid gap-6">
+            <ItemDetails item={item} onClose={() => onOpenChange(false)} />
 
-              <Separator className="max-w-1/2 justify-self-center" />
+            <Separator className="max-w-1/2 justify-self-center" />
 
-              <Button onClick={() => onOpenChange(false)} variant="outline">
-                Close
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPortal>
+            <Button onClick={() => onOpenChange(false)} variant="outline">
+              Close
+            </Button>
+          </div>
+        </DialogContent>
       </Dialog>
     );
   }
