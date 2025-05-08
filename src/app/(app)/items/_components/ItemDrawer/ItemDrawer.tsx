@@ -34,6 +34,10 @@ export const ItemDrawer = ({
 }: ItemDrawerProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  if (!item) {
+    return null;
+  }
+
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
@@ -64,25 +68,23 @@ export const ItemDrawer = ({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerPortal>
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Manage Item</DrawerTitle>
-            <VisuallyHidden>
-              <DrawerDescription>Manage item</DrawerDescription>
-            </VisuallyHidden>
-          </DrawerHeader>
-          <div className="grid gap-6 p-6">
-            <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Manage Item</DrawerTitle>
+          <VisuallyHidden>
+            <DrawerDescription>Manage item</DrawerDescription>
+          </VisuallyHidden>
+        </DrawerHeader>
+        <div className="grid gap-6 p-6">
+          <ItemDetails item={item} onClose={() => onOpenChange(false)} />
 
-            <Separator className="max-w-1/2 justify-self-center" />
+          <Separator className="max-w-1/2 justify-self-center" />
 
-            <Button onClick={() => onOpenChange(false)} variant="outline">
-              Close
-            </Button>
-          </div>
-        </DrawerContent>
-      </DrawerPortal>
+          <Button onClick={() => onOpenChange(false)} variant="outline">
+            Close
+          </Button>
+        </div>
+      </DrawerContent>
     </Drawer>
   );
 };
