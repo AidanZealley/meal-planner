@@ -61,7 +61,7 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
             <FormItem>
               <FormControl>
                 <div className="relative">
-                  <Input placeholder="Item name" {...field} autoFocus />
+                  <Input placeholder="Item name" {...field} className="pr-8" />
 
                   {isDirty && (
                     <div className="absolute top-0 right-0 bottom-0 flex items-center p-0.5">
