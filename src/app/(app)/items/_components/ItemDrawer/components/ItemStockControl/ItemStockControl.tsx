@@ -16,20 +16,24 @@ export const ItemStockControl = ({ item }: ItemStockControlProps) => {
   const { mutate: updateType, isPending: isUpdatingType } =
     api.items.updateType.useMutation({
       onSuccess: async () => {
-        await utils.items.getAll.invalidate();
-        await utils.items.getById.invalidate({ id });
-        await utils.shoppingList.getAll.invalidate();
-        await utils.meals.getById.invalidate();
+        await Promise.all([
+          utils.items.getAll.invalidate(),
+          utils.items.getById.invalidate({ id }),
+          utils.shoppingList.getAll.invalidate(),
+          utils.meals.getById.invalidate(),
+        ]);
       },
     });
 
   const { mutate: updateInStock, isPending: isUpdatingInStock } =
     api.items.updateInStock.useMutation({
       onSuccess: async () => {
-        await utils.items.getAll.invalidate();
-        await utils.items.getById.invalidate({ id });
-        await utils.shoppingList.getAll.invalidate();
-        await utils.meals.getById.invalidate();
+        await Promise.all([
+          utils.items.getAll.invalidate(),
+          utils.items.getById.invalidate({ id }),
+          utils.shoppingList.getAll.invalidate(),
+          utils.meals.getById.invalidate(),
+        ]);
       },
     });
 

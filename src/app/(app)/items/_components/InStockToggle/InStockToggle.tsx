@@ -28,9 +28,12 @@ export const InStockToggle = ({
             inStock ? "bg-primary text-primary-foreground dark:bg-primary" : "",
           )}
         >
-          {inStock && (
-            <Check className="text-secondary h-2 w-2 opacity-100 transition-opacity" />
-          )}
+          <Check
+            className={cn(
+              "text-secondary h-2 w-2 transition-opacity",
+              inStock ? "opacity-100" : "opacity-0",
+            )}
+          />
         </span>
         <span className={cn("text-left", inStock ? "" : "line-through")}>
           In Stock

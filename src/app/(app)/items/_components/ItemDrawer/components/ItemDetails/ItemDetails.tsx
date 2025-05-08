@@ -4,11 +4,11 @@ import { useState } from "react";
 import { Trash2 } from "lucide-react";
 
 import { api } from "@/trpc/react";
-import { EditableItemName } from "../EditableItemName";
 import { ItemStockControl } from "../ItemStockControl";
 import { Button } from "@/components/ui/button";
 import { DialogConfirmation } from "@/components/DialogConfirmation";
 import { LoadingButton } from "@/components/LoadingButton";
+import { EditItemForm } from "../EditItemForm";
 import type { ItemDetailsProps } from "./ItemDetails.types";
 
 export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
@@ -33,7 +33,7 @@ export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
       <div className="grid gap-6">
         <div className="grid gap-3">
           <div className="-ml-2 grid gap-1">
-            <EditableItemName item={item} />
+            <EditItemForm item={item} />
           </div>
 
           <ItemStockControl item={item} />
