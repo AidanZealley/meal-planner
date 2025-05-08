@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { MoreVertical } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
-import { ItemDrawer } from "../ItemDrawer";
 import { type ItemsListItemProps } from "./ItemsListItem.types";
 
-export const ItemsListItem = ({ item }: ItemsListItemProps) => {
-  const [showDetails, setShowDetails] = useState(false);
+export const ItemsListItem = ({ item, selectItem }: ItemsListItemProps) => {
   const { name, type, amountAvailable } = item;
 
   const inStock = amountAvailable > 0;
@@ -18,7 +15,7 @@ export const ItemsListItem = ({ item }: ItemsListItemProps) => {
   return (
     <>
       <div
-        onClick={() => setShowDetails(true)}
+        onClick={() => selectItem(item.id)}
         className="hover:bg-muted/50 grid gap-2 rounded-2xl p-2"
       >
         <div className="grid grid-cols-[1fr_auto] items-center gap-2 rounded-lg pl-2">
@@ -49,12 +46,6 @@ export const ItemsListItem = ({ item }: ItemsListItemProps) => {
           </div>
         </div>
       </div>
-
-      <ItemDrawer
-        item={item}
-        open={showDetails}
-        onOpenChange={setShowDetails}
-      />
     </>
   );
 };

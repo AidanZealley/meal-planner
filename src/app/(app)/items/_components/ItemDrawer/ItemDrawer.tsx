@@ -8,7 +8,6 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogPortal,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -17,7 +16,6 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
-  DrawerPortal,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
@@ -34,45 +32,22 @@ export const ItemDrawer = ({
 }: ItemDrawerProps) => {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
+  if (!item) {
+    return null;
+  }
+
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogPortal>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader>
-              <DialogTitle>Manage Item</DialogTitle>
-              <VisuallyHidden>
-                <DialogDescription>Manage item</DialogDescription>
-              </VisuallyHidden>
-            </DialogHeader>
-            <div className="grid gap-6">
-              <ItemDetails item={item} onClose={() => onOpenChange(false)} />
-
-              <Separator className="max-w-1/2 justify-self-center" />
-
-              <Button onClick={() => onOpenChange(false)} variant="outline">
-                Close
-              </Button>
-            </div>
-          </DialogContent>
-        </DialogPortal>
-      </Dialog>
-    );
-  }
-
-  return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerPortal>
-        <DrawerContent>
-          <DrawerHeader className="text-left">
-            <DrawerTitle>Manage Item</DrawerTitle>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Manage Item</DialogTitle>
             <VisuallyHidden>
-              <DrawerDescription>Manage item</DrawerDescription>
+              <DialogDescription>Manage item</DialogDescription>
             </VisuallyHidden>
-          </DrawerHeader>
-          <div className="grid gap-6 p-6">
+          </DialogHeader>
+          <div className="grid gap-6">
             <ItemDetails item={item} onClose={() => onOpenChange(false)} />
 
             <Separator className="max-w-1/2 justify-self-center" />
@@ -81,8 +56,31 @@ export const ItemDrawer = ({
               Close
             </Button>
           </div>
-        </DrawerContent>
-      </DrawerPortal>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
+      <DrawerContent>
+        <DrawerHeader className="text-left">
+          <DrawerTitle>Manage Item</DrawerTitle>
+          <VisuallyHidden>
+            <DrawerDescription>Manage item</DrawerDescription>
+          </VisuallyHidden>
+        </DrawerHeader>
+        <div className="grid gap-6 p-6">
+          <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+
+          <Separator className="max-w-1/2 justify-self-center" />
+
+          <Button onClick={() => onOpenChange(false)} variant="outline">
+            Close
+          </Button>
+        </div>
+      </DrawerContent>
     </Drawer>
   );
 };

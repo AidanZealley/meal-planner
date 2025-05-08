@@ -32,7 +32,7 @@ export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
     <>
       <div className="grid gap-6">
         <div className="grid gap-3">
-          <div className="-ml-2 grid gap-1">
+          <div className="grid gap-1">
             <EditItemForm item={item} />
           </div>
 
