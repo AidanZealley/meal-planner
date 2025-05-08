@@ -13,22 +13,22 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type EditItemFormProps } from "./EditItemForm.types";
-import { Check } from "lucide-react";
+import { Check, Undo } from "lucide-react";
 import { LoadingButton } from "@/components/LoadingButton";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   name: z.string().min(1).max(255),
 });
 
-export const EditItemForm = ({ item, onUpdate }: EditItemFormProps) => {
+export const EditItemForm = ({ item }: EditItemFormProps) => {
   const { id, name } = item;
   const utils = api.useUtils();
 
   const { mutate, isPending } = api.items.update.useMutation({
-    onSuccess: async () => {
+    onSuccess: async (_, values) => {
       await utils.items.getAll.invalidate();
-      form.reset();
-      onUpdate();
+      reset({ name: values.name });
     },
   });
 
@@ -39,6 +39,11 @@ export const EditItemForm = ({ item, onUpdate }: EditItemFormProps) => {
     },
   });
 
+  const {
+    reset,
+    formState: { isDirty },
+  } = form;
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     mutate({ id, name: values.name });
   };
@@ -47,7 +52,7 @@ export const EditItemForm = ({ item, onUpdate }: EditItemFormProps) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="grid grid-cols-[1fr_auto] items-center gap-1"
+        className="grid grid-cols-[1fr_auto] items-center gap-2"
       >
         <FormField
           control={form.control}
@@ -55,18 +60,34 @@ export const EditItemForm = ({ item, onUpdate }: EditItemFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input
-                  placeholder="Item name"
-                  {...field}
-                  className="md:text-md -ml-2 h-9 border-0 pl-2"
-                  autoFocus
-                />
+                <div className="relative">
+                  <Input placeholder="Item name" {...field} autoFocus />
+
+                  {isDirty && (
+                    <div className="absolute top-0 right-0 bottom-0 flex items-center p-0.5">
+                      <Button
+                        variant="ghost"
+                        size="icon-xs"
+                        className="hover:bg-transparent hover:opacity-50 dark:hover:bg-transparent"
+                        type="button"
+                        onClick={() => form.reset()}
+                      >
+                        <Undo />
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <LoadingButton isLoading={isPending} size="icon-sm" type="submit">
+        <LoadingButton
+          isLoading={isPending}
+          size="icon-sm"
+          type="submit"
+          disabled={!isDirty}
+        >
           <Check />
         </LoadingButton>
       </form>
