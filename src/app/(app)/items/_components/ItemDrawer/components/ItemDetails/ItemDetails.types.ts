@@ -3,5 +3,5 @@ import { type RouterOutputs } from "@/trpc/react";
 
 export type ItemDetailsProps = {
   item: ArrayElement<RouterOutputs["items"]["getAll"]>;
-  onClose?: () => void;
+  onSuccess?: () => void;
 };

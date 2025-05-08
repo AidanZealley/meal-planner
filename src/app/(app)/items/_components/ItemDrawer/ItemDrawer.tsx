@@ -48,7 +48,7 @@ export const ItemDrawer = ({
             </VisuallyHidden>
           </DialogHeader>
           <div className="grid gap-6">
-            <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+            <ItemDetails item={item} onSuccess={() => onOpenChange(false)} />
 
             <Separator className="max-w-1/2 justify-self-center" />
 
@@ -62,7 +62,7 @@ export const ItemDrawer = ({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange} repositionInputs={false}>
       <DrawerTrigger asChild>{trigger}</DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="text-left">
@@ -72,7 +72,7 @@ export const ItemDrawer = ({
           </VisuallyHidden>
         </DrawerHeader>
         <div className="grid gap-6 p-6">
-          <ItemDetails item={item} onClose={() => onOpenChange(false)} />
+          <ItemDetails item={item} onSuccess={() => onOpenChange(false)} />
 
           <Separator className="max-w-1/2 justify-self-center" />
 

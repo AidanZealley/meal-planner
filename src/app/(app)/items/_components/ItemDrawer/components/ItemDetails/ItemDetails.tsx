@@ -11,7 +11,7 @@ import { LoadingButton } from "@/components/LoadingButton";
 import { EditItemForm } from "../EditItemForm";
 import type { ItemDetailsProps } from "./ItemDetails.types";
 
-export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
+export const ItemDetails = ({ item, onSuccess }: ItemDetailsProps) => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const utils = api.useUtils();
@@ -24,7 +24,7 @@ export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
           await utils.shoppingList.getAll.invalidate(),
           await utils.meals.getAll.invalidate(),
         ]);
-        onClose?.();
+        onSuccess?.();
       },
     });
 
@@ -32,10 +32,7 @@ export const ItemDetails = ({ item, onClose }: ItemDetailsProps) => {
     <>
       <div className="grid gap-6">
         <div className="grid gap-3">
-          <div className="grid gap-1">
-            <EditItemForm item={item} />
-          </div>
-
+          <EditItemForm item={item} />
           <ItemStockControl item={item} />
         </div>
 
