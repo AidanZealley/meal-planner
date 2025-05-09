@@ -1,7 +1,7 @@
 import { api, HydrateClient } from "@/trpc/server";
 import { PlannedMealsList } from "../_components/PlannedMealsList";
 
-export default async function PlannerPage() {
+export default async function CookedPage() {
   void api.plannedMeals.getAllByStatus.prefetch({
     status: "cooked",
   });
