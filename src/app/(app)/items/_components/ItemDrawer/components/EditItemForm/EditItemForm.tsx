@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { type EditItemFormProps } from "./EditItemForm.types";
-import { Check, Undo } from "lucide-react";
+import { Save, Undo } from "lucide-react";
 import { LoadingButton } from "@/components/LoadingButton";
 import { Button } from "@/components/ui/button";
 
@@ -88,7 +88,7 @@ export const EditItemForm = ({ item }: EditItemFormProps) => {
           type="submit"
           disabled={!isDirty}
         >
-          <Check />
+          <Save />
         </LoadingButton>
       </form>
     </Form>

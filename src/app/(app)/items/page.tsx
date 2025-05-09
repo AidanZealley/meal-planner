@@ -8,7 +8,7 @@ export default async function ItemsPage() {
 
   return (
     <HydrateClient>
-      <main className="relative grid gap-6 py-6">
+      <main className="relative grid min-h-0 gap-6 py-6">
         <div className="grid gap-6 px-6 py-2">
           <h1 className="text-3xl font-bold">Items</h1>
           <NewItem />
