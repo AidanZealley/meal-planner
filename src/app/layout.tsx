@@ -25,7 +25,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geist.variable}`} suppressHydrationWarning>
-      <body className="relative">
+      <body className="relative grid h-full min-h-screen grid-rows-[1fr_auto]">
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

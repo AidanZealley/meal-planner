@@ -21,7 +21,11 @@ export const SidebarSubNavItem = ({
   };
   return (
     <SidebarMenuSubItem key={title}>
-      <SidebarMenuSubButton isActive={isActive} onClick={handleNavigate}>
+      <SidebarMenuSubButton
+        isActive={isActive}
+        onClick={handleNavigate}
+        className="cursor-default"
+      >
         {title}
       </SidebarMenuSubButton>
     </SidebarMenuSubItem>

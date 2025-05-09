@@ -5,6 +5,8 @@ import { api } from "@/trpc/react";
 import { ListChecks } from "lucide-react";
 
 export const ClearShoppingList = () => {
+  const { data: shoppingListItems } = api.shoppingList.getAll.useQuery();
+
   const utils = api.useUtils();
 
   const { mutate, isPending } = api.shoppingList.clear.useMutation({
@@ -23,6 +25,7 @@ export const ClearShoppingList = () => {
       isLoading={isPending}
       variant="secondary"
       size="sm"
+      disabled={!shoppingListItems?.length}
     >
       <span className="flex items-center gap-3">
         <ListChecks className="h-4 w-4" />
