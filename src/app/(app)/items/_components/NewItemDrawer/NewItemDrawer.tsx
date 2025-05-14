@@ -14,12 +14,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import type { NewItemDrawerProps } from "./NewItemDrawer.types";
 import { NewItem } from "../NewItem/NewItem";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Separator } from "@/components/ui/separator";
+import type { NewItemDrawerProps } from "./NewItemDrawer.types";
 
 export const NewItemDrawer = ({
   open,

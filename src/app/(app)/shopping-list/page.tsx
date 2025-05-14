@@ -1,6 +1,9 @@
+import { Suspense } from "react";
+
 import { api, HydrateClient } from "@/trpc/server";
 import { ShoppingList } from "./_components/ShoppingList";
 import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/Spinner";
 import { AdditionalItemsPicker } from "./_components/AdditionalItemsPicker";
 import { GenerateShoppingList } from "./_components/GenerateShoppingList";
 import { ClearShoppingList } from "./_components/ClearShoppingList";
@@ -16,13 +19,17 @@ export default async function ShoppingListPage() {
           <h1 className="text-3xl font-bold">Shopping List</h1>
 
           <div className="flex items-center gap-2">
-            <ClearShoppingList />
-            <GenerateShoppingList />
+            <Suspense fallback={<Spinner />}>
+              <ClearShoppingList />
+              <GenerateShoppingList />
+            </Suspense>
           </div>
         </div>
-        <ShoppingList />
-        <Separator />
-        <AdditionalItemsPicker />
+        <Suspense fallback={<Spinner />}>
+          <ShoppingList />
+          <Separator />
+          <AdditionalItemsPicker />
+        </Suspense>
       </main>
     </HydrateClient>
   );

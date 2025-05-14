@@ -1,7 +1,10 @@
+import { Suspense } from "react";
+
 import { api, HydrateClient } from "@/trpc/server";
 import { PlannedMealsList } from "../_components/PlannedMealsList";
+import { Spinner } from "@/components/Spinner";
 
-export default async function PlannerPage() {
+export default async function PlannedPage() {
   void api.plannedMeals.getAllByStatus.prefetch({
     status: "planned",
   });
@@ -13,7 +16,9 @@ export default async function PlannerPage() {
           <h1 className="text-3xl font-bold">Planned Meals</h1>
         </div>
 
-        <PlannedMealsList status="planned" />
+        <Suspense fallback={<Spinner />}>
+          <PlannedMealsList status="planned" />
+        </Suspense>
       </main>
     </HydrateClient>
   );

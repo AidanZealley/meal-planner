@@ -1,6 +1,9 @@
+import { Suspense } from "react";
+
 import { api, HydrateClient } from "@/trpc/server";
 import { MealsList } from "./_components/MealsList";
 import { NewMeal } from "./_components/NewMeal";
+import { Spinner } from "@/components/Spinner";
 
 export default async function MealsPage() {
   void api.meals.getAll.prefetch();
@@ -13,7 +16,9 @@ export default async function MealsPage() {
           <NewMeal />
         </div>
 
-        <MealsList />
+        <Suspense fallback={<Spinner />}>
+          <MealsList />
+        </Suspense>
       </main>
     </HydrateClient>
   );

@@ -19,13 +19,15 @@ export const ClearShoppingList = () => {
     mutate();
   };
 
+  const hasItems = !!(shoppingListItems?.length ?? true);
+
   return (
     <LoadingButton
       onClick={handleClearClick}
       isLoading={isPending}
       variant="secondary"
       size="sm"
-      disabled={!shoppingListItems?.length}
+      disabled={!hasItems}
     >
       <span className="flex items-center gap-3">
         <ListChecks className="h-4 w-4" />

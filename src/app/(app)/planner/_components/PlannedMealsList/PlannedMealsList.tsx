@@ -27,7 +27,7 @@ export const PlannedMealsList = ({ status }: PlannedMealsListProps) => {
 
   return (
     <>
-      <div className="grid gap-1 pr-5 pl-3">
+      <div className="grid gap-1">
         {plannedMeals.map((plannedMeal) => (
           <PlannedMealsListItem
             key={plannedMeal.id}

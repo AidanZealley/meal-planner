@@ -1,7 +1,10 @@
+import { Suspense } from "react";
+
 import { api, HydrateClient } from "@/trpc/server";
 import { ItemsList } from "./_components/ItemsList";
 import { NewItem } from "./_components/NewItem";
 import { NewItemButton } from "./_components/NewItemButton";
+import { Spinner } from "@/components/Spinner";
 
 export default async function ItemsPage() {
   void api.items.getAll.prefetch();
@@ -13,7 +16,9 @@ export default async function ItemsPage() {
           <h1 className="text-3xl font-bold">Items</h1>
           <NewItem />
         </div>
-        <ItemsList />
+        <Suspense fallback={<Spinner />}>
+          <ItemsList />
+        </Suspense>
         <NewItemButton />
       </main>
     </HydrateClient>
