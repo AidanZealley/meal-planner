@@ -273,7 +273,7 @@ export default async function DashboardPage() {
               <Card className="min-h-full">
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
+                    {[...(Array(5) as number[])].map((_, i) => (
                       <Star
                         key={i}
                         className="h-4 w-4 fill-yellow-400 text-yellow-400"
@@ -281,8 +281,9 @@ export default async function DashboardPage() {
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    "MealPlanner has completely transformed how our family
-                    approaches meal planning. No more last-minute grocery runs!"
+                    &quot;MealPlanner has completely transformed how our family
+                    approaches meal planning. No more last-minute grocery
+                    runs!&quot;
                   </p>
                   <div className="font-semibold">Sarah Johnson</div>
                   <div className="text-muted-foreground text-sm">
@@ -293,7 +294,7 @@ export default async function DashboardPage() {
               <Card className="min-h-full">
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
+                    {[...(Array(5) as number[])].map((_, i) => (
                       <Star
                         key={i}
                         className="h-4 w-4 fill-yellow-400 text-yellow-400"
@@ -301,8 +302,8 @@ export default async function DashboardPage() {
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    "The automatic stock management is genius. I always know
-                    exactly what I have and what I need to buy."
+                    &quot;The automatic stock management is genius. I always
+                    know exactly what I have and what I need to buy.&quot;
                   </p>
                   <div className="font-semibold">Mike Chen</div>
                   <div className="text-muted-foreground text-sm">Home Chef</div>
@@ -311,7 +312,7 @@ export default async function DashboardPage() {
               <Card className="min-h-full">
                 <CardContent className="p-6">
                   <div className="mb-4 flex items-center gap-1">
-                    {[...Array(5)].map((_, i) => (
+                    {[...(Array(5) as number[])].map((_, i) => (
                       <Star
                         key={i}
                         className="h-4 w-4 fill-yellow-400 text-yellow-400"
@@ -319,8 +320,8 @@ export default async function DashboardPage() {
                     ))}
                   </div>
                   <p className="text-muted-foreground mb-4">
-                    "We've cut our grocery bill by 30% and waste so much less
-                    food. This app pays for itself!"
+                    &quot;We&apos;ve cut our grocery bill by 30% and waste so
+                    much less food. This app pays for itself!&quot;
                   </p>
                   <div className="font-semibold">Emma Davis</div>
                   <div className="text-muted-foreground text-sm">
