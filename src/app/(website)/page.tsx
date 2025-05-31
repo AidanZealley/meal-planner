@@ -334,7 +334,7 @@ export default async function DashboardPage() {
         </section>
 
         {/* CTA Section */}
-        <section className="via-brand flex w-full justify-center bg-gradient-to-br from-sky-600 to-indigo-800 py-12 md:py-24 lg:py-32">
+        <section className="via-brand flex w-full justify-center bg-gradient-to-br from-sky-600 to-indigo-800 px-4 py-12 md:px-6 md:py-24 lg:py-32">
           <div className="container">
             <div className="flex flex-col items-center justify-center gap-6 text-center">
               <div className="space-y-2">
